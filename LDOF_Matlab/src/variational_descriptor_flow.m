@@ -16,15 +16,9 @@ inds_outofimage=[];
 
 fprintf('\n')
 for l = num_level:-1:1
-<<<<<<< HEAD
-    %if(verbose)
-        progress(sprintf('variational flow'),para.level-l+1,para.level);
-    %end
-=======
     if(verbose)
         progress(sprintf('\t\t level \n'),para.level-l+1,para.level);
     end
->>>>>>> FETCH_HEAD
     
     I1=I1s{l};
     I2=I2s{l};
