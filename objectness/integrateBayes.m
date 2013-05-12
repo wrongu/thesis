@@ -6,7 +6,7 @@ for cue_id = 1:length(cues)
     
     switch upper(cues{cue_id})
         
-        case 'MS'                    
+        case 'MS'
             struct = load(fullfile(params.data, 'MSlikelihood.mat'));        
             likelihood{cue_id} = struct.likelihood;
     

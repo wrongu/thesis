@@ -45,7 +45,7 @@ else
     params.pObj = pObj;
 
 end
-    
+
 %learn parameters for CC, ED, SS, OF, MO
 if nargin < 2
     cues = {'CC','ED','SS', 'OF', 'MO'};
@@ -61,7 +61,6 @@ end
 save(fullfile(params.yourData, '/params.mat'),'params');
 
 end
-
 
 % function posneg = generatePosNegMS(params)
 % 
@@ -91,6 +90,7 @@ end
 % end
 % 
 % end
+
 
 function [likelihood, pobj] = deriveLikelihoodMS(posneg,params)
 

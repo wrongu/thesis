@@ -47,4 +47,5 @@ h = vdata{2};
 box = a_box;
 box([1 3]) = round(box([1 3]) * w / a_width);
 box([2 4]) = round(box([2 4]) * h / a_height);
+
 end

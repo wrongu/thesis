@@ -13,7 +13,7 @@ if exist('DGradient', 'file') ~= 3
     startup;
 end
 
-mosegParams = structMosegParams();
+mosegParams = structMosegParams('../data/Youtube/10class/penguin/03.avi', 1, 30);
 
 I = imread('../objectness/002053.jpg');
 I = double(I) / 255;

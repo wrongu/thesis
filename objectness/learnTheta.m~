@@ -18,15 +18,15 @@ end
 bestValue = -inf;
 thetaOpt = 0;
 
-scores = zeros(3, length(params.(cue).domain));
+scores = zeros(4, length(params.(cue).domain));
 % scores(1,:) = params.(cue).domain;
 
 parfor idx = 1:length(params.(cue).domain)
     
     theta = params.(cue).domain(idx);
-    [likelihood, ~, logTotal] = deriveLikelihood(posneg,theta,params,cue);
+    [likelihood, p, logTotal] = deriveLikelihood(posneg,theta,params,cue);
     
-    scores(:, idx) = [params.(cue).domain(idx) logTotal likelihood]';
+    scores(:, idx) = [params.(cue).domain(idx) logTotal likelihood p]';
     
 %     if bestValue < logTotal
 %         thetaOpt = theta;
@@ -37,12 +37,84 @@ parfor idx = 1:length(params.(cue).domain)
 end
 
 [bestValue, iBest] = max(scores(2,:));
-thetaOpt
+thetaOpt = params.(cue).domain(iBest);
+pobj = scores(4, iBest);
 
+=======
+scores(1,:) = params.(cue).domain;
+
+for idx = 1:length(params.(cue).domain)
+    
+    theta = params.(cue).domain(idx);
+    [likelihood, pobj, logTotal] = deriveLikelihood(posneg,theta,params,cue);
+    
+    scores(2,idx) = logTotal;
+    scores(3,idx) = likelihood;
+    
+    if bestValue < logTotal
+        thetaOpt = theta;
+        likelihoodOpt = likelihood;
+        bestValue = logTotal;
+    end  
+    fprintf('Best current theta for %s is %f \n',cue,thetaOpt)   
+end
+
+>>>>>>> FETCH_HEAD
 save(sprintf('Data/learn%s.mat', cue), 'scores');
 
 end
 
+<<<<<<< HEAD
+=======
+% posneg is a struct array parallel to structGT (the training examples).
+% So, posneg(k) is a struct corresponding to the kth training image.
+% posneg(k).examples is a Wx4 array of randomly generated windows for that
+% image. posneg(k).labels is a Wx1 array, {-1, 1}^W, where labels(w)==1
+% indicates that the wth window (posneg(k).examples(w,:)) covers* an object
+% in the image. posneg(k).img is the kth training image (represented as a
+% 3-channel double);
+% *cover is defined in terms of pascal score: the ratio of intersected area
+% to unioned area must be more than a threshold (default 0.5)
+function posneg = generatePosNeg(params)
+
+if params.primary_type == params.TYPE_IMAGE
+    struct = load(fullfile(params.trainingImages, 'structGT.mat'));
+elseif params.primary_type == params.TYPE_VIDEO
+    struct = load(fullfile(params.trainingVideos, 'structGT.mat'));
+end
+structGT= struct.structGT;
+
+for idx = 1:length(structGT)
+    if structGT(idx).type == params.TYPE_IMAGE
+        img = imread([params.trainingImages structGT(idx).img]);
+    elseif structGT(idx).type == params.TYPE_VIDEO
+        V = VideoReader(structGT(idx).video_file);
+        img = read(V, structGT(idx).frame);
+    end
+    % TODO - verify conversion to double here is 'safe' in terms of other
+    % algorithms' expected types
+    if isa(img, 'uint8')
+        img = double(img) / 255;
+    end
+    windows = generateWindows(img,'uniform',params);
+    posneg(idx).examples = windows;
+    labels = - ones(size(windows,1),1);
+    for idx_window = 1:size(windows,1)        
+        for bb_id = 1:size(structGT(idx).boxes,1)
+            pascalScore = computePascalScore(structGT(idx).boxes(bb_id,:),windows(idx_window,:));
+            if (pascalScore >= params.pascalThreshold)
+                labels(idx_window) = 1;
+                break;
+            end
+        end
+    end
+    posneg(idx).labels = labels;
+    posneg(idx).img = img;
+end
+
+end
+
+>>>>>>> FETCH_HEAD
 function [likelihood, pobj, logTotal] = deriveLikelihood(posneg,theta_value,params,cue)
 
 params.(cue).theta = theta_value;
@@ -59,8 +131,13 @@ neg = 0;
 
 for idx = 1:length(posneg)
     
+<<<<<<< HEAD
     % get a score for all windows
     temp = computeScores(posneg(idx),cue,params,posneg(idx).examples);
+=======
+    % get a score for all windows 
+    temp = computeScores(posneg(idx).img,cue,params,posneg(idx).examples);
+>>>>>>> FETCH_HEAD
     posneg(idx).scores = temp(:,end);
     
     indexPositive = find(posneg(idx).labels == 1);
@@ -71,6 +148,10 @@ for idx = 1:length(posneg)
     examplesNeg(neg+1:neg+length(indexNegative)) = posneg(idx).scores(indexNegative);
     neg = neg + length(indexNegative);
     
+<<<<<<< HEAD
+=======
+       
+>>>>>>> FETCH_HEAD
 end
 examplesPos(pos+1:end) = [];
 examplesNeg(neg+1:end) = [];

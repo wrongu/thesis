@@ -6,11 +6,14 @@ W = pairwiseDist(traj_array, ...
     'Symmetric', 'true', ...
     'SparseOutput', 'true');
 
-save('W3.mat', 'W');
+save('W.mat', 'W');
 
 end
 
-function dist = traj_dist(TA, TB, flows, mosegParams)
+function affinity = traj_dist(TA, TB, flows, mosegParams)
+% DEBUG
+V = VideoReader(mosegParams.video_file);
+
 common_frames = max(TA.startframe, TB.startframe) : ...
     min(TA.endframe, TB.endframe);
 
@@ -53,21 +56,27 @@ if length(common_frames) > 1
             if D > Dmax, Dmax = D; end
             computed_one = true;
         end
-        % DEBUG
-        %if rand < 0.01
-        %    subplot(2,2,[1 2]);
-        %    plot3(TA.points(1,:), TA.startframe:TA.endframe, TA.points(2,:), '-or', ...
-         %       TB.points(1,:), TB.startframe:TB.endframe, TB.points(2,:), '-ob');
-          %  
-           % pause;
-        %end
     end
-    dist = exp(-mosegParams.lambda * Dmax);
-    %if dist < 1E-30
-    %    dist = 0;
-    %end
+    affinity = exp(-mosegParams.lambda * Dmax);
+    
+    % DEBUG
+    if rand < 0.01
+        subplot(1,2,1);
+        imshow(read(V, common_frames(1)));
+        hold on;
+        plot(TA.points(2,:), TA.points(1,:), '-or', ...
+            TB.points(2,:), TB.points(1,:), '-ob');
+        hold off;
+        set(gca, 'YDir', 'reverse');
+        axis([0 size(flows{1}, 2) 0 size(flows{1}, 1)]);
+        subplot(1,2,2);
+        imshow(flowToColor(flows{common_frames(1)}));
+        fprintf('Dsp = %f\nsigma2 = %f\ndiff displacement = %g\naffinity = %g', ...
+            Dsp, sigma2, sq_diff, affinity);
+        pause;
+    end
 else
-    dist = 0;
+    affinity = 0;
 end
 end
 
@@ -86,3 +95,4 @@ var_u = var(flow_u(:));
 var_v = var(flow_v(:));
 sigma2 = var_u * var_u + var_v * var_v;
 end
+

@@ -10,6 +10,8 @@ addpath(fullfile(pwd, 'objectness'));
 addpath(fullfile(pwd, 'LDOF_Matlab'));
 addpath(fullfile(pwd, 'MoSeg_Matlab'));
 addpath(fullfile(pwd, 'DGradient'));
+addpath(fullfile(pwd, 'SpectralClustering'));
+addpath(fullfile(pwd, 'SpectralClustering/files'));
 
 disp('-- OBJECTNESS STARTUP --');
 cd('objectness');

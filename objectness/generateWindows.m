@@ -1,8 +1,9 @@
-function windows = generateWindows(size,optionGenerate,params,cue)  
+function windows = generateWindows(sz,optionGenerate,params,cue)  
 
-height = size(1);
-width = size(2);
+assert(numel(sz) < 4);
 
+height = sz(1);
+width = sz(2);
 
 switch optionGenerate
     

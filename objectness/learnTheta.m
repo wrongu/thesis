@@ -15,18 +15,14 @@ catch
     save(fullfile(params.trainingImages, 'Examples', 'posneg.mat'),'posneg');
 end
 
-bestValue = -inf;
-thetaOpt = 0;
-
-scores = zeros(3, length(params.(cue).domain));
-% scores(1,:) = params.(cue).domain;
+scores = zeros(4, length(params.(cue).domain));
 
 parfor idx = 1:length(params.(cue).domain)
     
     theta = params.(cue).domain(idx);
-    [likelihood, ~, logTotal] = deriveLikelihood(posneg,theta,params,cue);
+    [likelihood, p, logTotal] = deriveLikelihood(posneg,theta,params,cue);
     
-    scores(:, idx) = [params.(cue).domain(idx) logTotal likelihood]';
+    scores(:, idx) = [params.(cue).domain(idx) logTotal likelihood p]';
     
 %     if bestValue < logTotal
 %         thetaOpt = theta;
@@ -37,7 +33,9 @@ parfor idx = 1:length(params.(cue).domain)
 end
 
 [bestValue, iBest] = max(scores(2,:));
-thetaOpt
+thetaOpt = params.(cue).domain(iBest);
+likelihoodOpt = scores(3, iBest);
+pobj = scores(4, iBest);
 
 save(sprintf('Data/learn%s.mat', cue), 'scores');
 
@@ -70,7 +68,6 @@ for idx = 1:length(posneg)
     indexNegative = find(posneg(idx).labels == -1);
     examplesNeg(neg+1:neg+length(indexNegative)) = posneg(idx).scores(indexNegative);
     neg = neg + length(indexNegative);
-    
 end
 examplesPos(pos+1:end) = [];
 examplesNeg(neg+1:end) = [];
