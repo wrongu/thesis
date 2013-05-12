@@ -22,3 +22,5 @@ disp('-- MOSEG STARTUP --');
 cd('MoSeg_Matlab');
 startup;
 cd(root_path);
+
+clear root_path;
