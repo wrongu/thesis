@@ -1,0 +1,21 @@
+function traj_array = mosegByTrajectories(traj_array, flows, mosegParams)
+
+W = createTrajectoryAffinityMatrix(traj_array, flows, mosegParams);
+
+D = diag(sum(W,2));
+
+Laplacian = W-D;
+
+[eigenvectors, lambda] = eigs(Laplacian, 20, 'SM');
+
+% TODO - figure out normalization
+% [sort_lambda, I] = sort(diag(lambda));
+% selection = (sort_lambda > 0) & (sort_lambda < mosegParams.cluster_threshold);
+% eigenvectors = V(:, I(selection));
+
+for K=2:mosegParams.max_clusters
+    km_clusters = kmeans(eigenvectors, K, 'Start', 'uniform', ...
+        'Replicatse
+end
+
+end

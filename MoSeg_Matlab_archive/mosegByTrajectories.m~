@@ -1,0 +1,21 @@
+function traj_array = mosegByTrajectories(traj_array, flows, mosegParams)
+
+W = createTrajectoryAffinityMatrix(traj_array, flows, mosegParams);
+
+D = diag(sum(W,2));
+
+[V, L] = eig(W-D);
+
+[sort_L, I] = sort(diag(L));
+
+selection = (sort_L > 0) & (sort_L < mosegParams.cluster_threshold);
+
+eigenvectors = V(:, I(selection));
+
+m = size(eigenvectors, 2);
+
+midframe = (mosegParams.startframe + mosegParams.endframe) / 2;
+
+Vid = video
+
+end
