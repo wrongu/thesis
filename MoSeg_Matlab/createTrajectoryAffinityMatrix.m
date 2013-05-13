@@ -1,7 +1,9 @@
-function W = createTrajectoryAffinityMatrix(traj_array, flows, mosegParams)
+function W = createTrajectoryAffinityMatrix(traj_array, flows, mosegParams, debug)
+
+if nargin < 4, debug = false; end
 
 W = pairwiseDist(traj_array, ...
-    'DistFun', @(a, b) traj_dist(a, b, flows, mosegParams), ...
+    'DistFun', @(a, b) traj_dist(a, b, flows, mosegParams, debug), ...
     'UseParallel', 'always', ...
     'Symmetric', 'true', ...
     'SparseOutput', 'true');
@@ -10,9 +12,8 @@ save('W.mat', 'W');
 
 end
 
-function affinity = traj_dist(TA, TB, flows, mosegParams)
-% DEBUG
-V = VideoReader(mosegParams.video_file);
+function affinity = traj_dist(TA, TB, flows, mosegParams, debug)
+if debug, V = VideoReader(mosegParams.video_file); end
 
 common_frames = max(TA.startframe, TB.startframe) : ...
     min(TA.endframe, TB.endframe);
@@ -69,8 +70,7 @@ if length(common_frames) > 1
     % maps to near-0 affinity
     affinity = exp(-mosegParams.lambda * Dmax);
     
-    % DEBUG
-    if rand < 0.01
+    if debug && rand < 0.01
         subplot(1,2,1);
         imshow(read(V, common_frames(1)));
         hold on;
