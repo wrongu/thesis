@@ -259,9 +259,11 @@ else
                 fullfile(params.trainingVideos, descGT.video_file), ...
                 startframe, endframe);
             moseg_params.num_clusters = params.MO.theta;
-            clusters = MoSeg(moseg_params);
+            [clusters, trajectories, ~] = moseg(moseg_params);
             
-            % TODO - integral images by cluster?
+            % TODO - get a score
+            
+            boxes = [windows zeros(size(windows,1), 1)];
             
         otherwise
             error('Option not known: check the cue names');

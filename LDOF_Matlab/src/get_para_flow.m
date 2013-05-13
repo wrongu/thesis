@@ -8,7 +8,7 @@ para.s = 1.5;               % enlarge the gaussian kernel by s when smoothing th
 para.gamma = 5;             % weight of gradient non-consistency
 para.out_iter = 10;          % max iteration of the outer fixed point iteration
 para.sor_iter = 5;        % max iteration of sor
-para.downsampling = 0.98;   % downsampling rate
+para.downsampling = 0.95;   % downsampling rate
 % para.sigma = 1.3;
 para.sigma = 1/sqrt(2*para.downsampling);  % used for pyramid construction and smooth the derivatives
 

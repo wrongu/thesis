@@ -1,9 +1,10 @@
 function boxes = scoreOF(Flow, windows, thetaOF)
 % scoreOF(Flow, windows, thetaOF) compute score as 
 
-W = size(windows, 1);
 U = Flow(:,:,1);
 V = Flow(:,:,2);
+
+avgMag = sum(sum(sqrt(U.*U + V.*V)));
 
 intU = computeIntegralImage(U);
 intV = computeIntegralImage(V);
@@ -34,9 +35,10 @@ diffV = meanV_in - meanV_ring;
 
 dists = diffU.^2 + diffV.^2;
 
+scores = dists / avgMag;
+
 % TODO - normalize, maybe by using inverse cosine instead of distance?
 % TODO - check for reasonable ranges
-scores = exp(-dists);
 
 boxes = [windows scores];
 end
