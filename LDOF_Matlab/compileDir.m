@@ -7,7 +7,7 @@ if exist('sor_warping_flow_multichannel_LDOF', 'file') ~= 3
     mex sor_warping_flow_multichannel_LDOF.cpp;
 end
 
-if exist('ann_mex', 'file') ~= 3
+if ~exist('ann_test', 'file')
     
     cd([root_dir '/third_party/ann_mwrapper/']);
     ann_compile_mex;
