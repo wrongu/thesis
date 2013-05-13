@@ -60,21 +60,21 @@ if length(common_frames) > 1
     affinity = exp(-mosegParams.lambda * Dmax);
     
     % DEBUG
-    if rand < 0.01
-        subplot(1,2,1);
-        imshow(read(V, common_frames(1)));
-        hold on;
-        plot(TA.points(2,:), TA.points(1,:), '-or', ...
-            TB.points(2,:), TB.points(1,:), '-ob');
-        hold off;
-        set(gca, 'YDir', 'reverse');
-        axis([0 size(flows{1}, 2) 0 size(flows{1}, 1)]);
-        subplot(1,2,2);
-        imshow(flowToColor(flows{common_frames(1)}));
-        fprintf('Dsp = %f\nsigma2 = %f\ndiff displacement = %g\naffinity = %g', ...
-            Dsp, sigma2, sq_diff, affinity);
-        pause;
-    end
+%     if rand < 0.01
+%         subplot(1,2,1);
+%         imshow(read(V, common_frames(1)));
+%         hold on;
+%         plot(TA.points(2,:), TA.points(1,:), '-or', ...
+%             TB.points(2,:), TB.points(1,:), '-ob');
+%         hold off;
+%         set(gca, 'YDir', 'reverse');
+%         axis([0 size(flows{1}, 2) 0 size(flows{1}, 1)]);
+%         subplot(1,2,2);
+%         imshow(flowToColor(flows{common_frames(1)}));
+%         fprintf('Dsp = %f\nsigma2 = %f\ndiff displacement = %g\naffinity = %g', ...
+%             Dsp, sigma2, sq_diff, affinity);
+%         pause;
+%     end
 else
     affinity = 0;
 end

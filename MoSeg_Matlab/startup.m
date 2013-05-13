@@ -19,14 +19,20 @@ if exist('DGradient', 'file') ~= 3
     end
     clear need_mex root;
 end
+
 if ~exist('LDOF', 'file')
-    fprintf('adding ../LDOF_Matlab to the path');
+    fprintf('adding ../LDOF_Matlab to the path\n');
     addpath('../LDOF_Matlab');
     root = pwd;
     cd('../LDOF_Matlab');
     startup;
     cd(root);
     clear root;
+end
+
+if ~exist('SpectralClustering', 'file')
+    fprintf('adding ../SpectralClustering/files to the path\n');
+    addpath('../SpectralClustering/files');
 end
 
 mosegParams = structMosegParams('../data/Youtube/10class/penguin/03.avi', 1, 30);
