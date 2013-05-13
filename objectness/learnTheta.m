@@ -15,14 +15,16 @@ catch
     save(fullfile(params.trainingImages, 'Examples', 'posneg.mat'),'posneg');
 end
 
-scores = zeros(4, length(params.(cue).domain));
+scores = zeros(3, length(params.(cue).domain));
+all_likelihoods = cell(1, length(params.(cue).domain));
 
 parfor idx = 1:length(params.(cue).domain)
     
     theta = params.(cue).domain(idx);
     [likelihood, p, logTotal] = deriveLikelihood(posneg,theta,params,cue);
     
-    scores(:, idx) = [params.(cue).domain(idx) logTotal likelihood p]';
+    scores(:, idx) = [params.(cue).domain(idx) logTotal p]';
+    all_likelihoods{idx} = likelihood;
     
 %     if bestValue < logTotal
 %         thetaOpt = theta;
@@ -34,8 +36,8 @@ end
 
 [bestValue, iBest] = max(scores(2,:));
 thetaOpt = params.(cue).domain(iBest);
-likelihoodOpt = scores(3, iBest);
-pobj = scores(4, iBest);
+likelihoodOpt = all_likelihoods{iBest};
+pobj = scores(3, iBest);
 
 save(sprintf('Data/learn%s.mat', cue), 'scores');
 

@@ -155,12 +155,17 @@ else
             xmax = round(windows(:,3));
             ymax = round(windows(:,4));
             
-            [xminInner, yminInner, xmaxInner, ymaxInner] = ...
+            offset = ...
                 window_offset([xmin ymin xmax ymax], params.ED.theta, ...
                 'in', size(img,2), size(img,1));
             
+            xminInner = round(offset(:,1));
+            yminInner = round(offset(:,2));
+            xmaxInner = round(offset(:,3));
+            ymaxInner = round(offset(:,4));
+            
             scoreWindows = computeIntegralImageScores(h,[xmin ymin xmax ymax]);
-            scoreInnerWindows = computeIntegralImageScores(h,[xminInner yminInner xmaxInner ymaxInner]);
+            scoreInnerWindows = computeIntegralImageScores(h,offset);
             areaWindows = (xmax - xmin + 1) .* (ymax - ymin +1);
             areaInnerWindows = (xmaxInner - xminInner + 1) .* (ymaxInner - yminInner + 1);
             areaDiff = areaWindows - areaInnerWindows;
@@ -182,16 +187,15 @@ else
             imgName = [imgBase '.' imgType];
             cd(params.tempdir);
             imwrite(img,imgName,imgType);
+            I = img;
             segmFileName = [imgBase '_segm.ppm'];
             
             if not(exist(segmFileName,'file'))
                 % convert image to ppm
                 if not(strcmp(imgType, 'ppm'))
-                    cmd = [ 'convert "' imgName '" "' imgBase '.ppm"' ];
-                    system(cmd);
+                    imwrite(I, [imgBase '.ppm'], 'PPM');
                 end
                 % setting segmentation params
-                I = imread([imgBase '.ppm']);
                 Iarea = size(I,1)*size(I,2);
                 sf = sqrt(Iarea/(300*200));
                 sigma = basis_sigma*sf;
