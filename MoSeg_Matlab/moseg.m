@@ -22,7 +22,9 @@ W = createTrajectoryAffinityMatrix(trajectories, fflows, mosegParams);
 clusters = SpectralClustering(W, mosegParams.num_clusters, 2);
 
 for k = 1:size(clusters,2)
-    trajectories(clusters(:,k)).cluster = k;
+    for tr = find(clusters(:,k))
+        trajectories(tr).cluster = k;
+    end
 end
 
 end
