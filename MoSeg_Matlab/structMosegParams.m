@@ -29,7 +29,7 @@ mosegParams.flow_variation_window = 7;
 mosegParams.lambda = 0.1;
 mosegParams.cluster_threshold = 0.2;
 mosegParams.repeat_kmeans = 10;
-mosegParams.max_clusters = 8;
+mosegParams.num_clusters = 8;
 
 verifyMosegParams(mosegParams, 'structMosegParams.m');
 

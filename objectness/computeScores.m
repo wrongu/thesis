@@ -237,59 +237,31 @@ else
             
         case 'OF'
             % checkMotionParams(params);
+            assert(descGT.type == 2, 'cue OF is undefined for images');
             [h, w, ~] = size(img);
             ldof_params = get_para_flow(h, w);
-            assert(descGT.type == 2, 'cue OF is undefined for images');
             im2 = read(V, descGT.frame+1);
             % compute flow
             [F, ~, ~] = LDOF(img, im2, ldof_params);
-            % TODO - some sort of integral image
-            % compute surrounding windows as offsets from given windows
-            [xminSurr, yminSurr, xmaxSurr, ymaxSurr] = ...
-                window_offset(round(windows), params.OF.theta, ...
-                'out', size(img,2), size(img,1));
             
+            boxes = scoreOF(F, windows, params.OF.theta);
             
         case 'MO'
-            assert(descGT.type == 2, 'cue MO is undefined for images');
             % checkMotionParams(params);
+            assert(descGT.type == 2, 'cue MO is undefined for images');
+            startframe = descGT.frame - params.MO.preframes;
+            endframe = descGT.frame + params.MO.postframes;
+            moseg_params = structMosegParams(...
+                fullfile(params.trainingVideos, descGT.video_file), ...
+                startframe, endframe);
+            moseg_params.num_clusters = params.MO.theta;
+            clusters = MoSeg(moseg_params);
             
+            % TODO - integral images by cluster?
             
         otherwise
             error('Option not known: check the cue names');
     end
 end
 
-end
-
-function offset = window_offset(w, theta, direction, imwidth, imheight)
-
-offset = w;
-xmin = w(:,1);
-ymin = w(:,2);
-xmax = w(:,3);
-ymax = w(:,4);
-
-switch(direction)
-    case 'in'
-        % shrink window by factor of theta. if w had dimensions (x,y),
-        % offset will have dimensions (x*theta, y*theta), centered at the
-        % same point
-        xmaxInner = round((xmax*(200+theta)/(theta+100) + xmin*theta/(theta+100)+100/(theta+100)-1)/2);
-        xminInner  = round(xmax + xmin - xmaxInner);
-        ymaxInner = round((ymax*(200+theta)/(theta+100) + ymin*theta/(theta+100)+100/(theta+100)-1) /2);
-        yminInner  = round(ymax + ymin - ymaxInner);
-        offset = [xminInner, yminInner, xmaxInner, ymaxInner];
-    case 'out'
-        % expand window by factor of theta. if w had dimensions (x,y),
-        % offset will have dimensions (x/theta, y/theta), centered at the
-        % same point
-        offsetWidth  = (w(:,3)-w(:,1)+1) * theta / 200;
-        offsetHeight = (w(:,4)-w(:,2)+1) * theta / 200;
-        xminSurr=round(max(xmin-offsetWidth,1));
-        xmaxSurr=round(min(xmax+offsetWidth,imwidth));
-        yminSurr=round(max(ymin-offsetHeight,1));
-        ymaxSurr=round(min(ymax+offsetHeight,imheight));
-        offset = [xminSurr, yminSurr, xmaxSurr, ymaxSurr];
-end
 end

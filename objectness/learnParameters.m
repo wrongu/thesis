@@ -11,7 +11,7 @@ if nargin < 4
     skip_precomputed = false;
 end
 
-params = defaultParams(dir_root, 2);
+params = defaultParams(dir_root, 1);
 
 if nargin == 1
     %train the parameters from another dataset
