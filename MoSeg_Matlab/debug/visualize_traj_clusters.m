@@ -1,14 +1,8 @@
-if ~exist('C', 'var')
-    if ~exist('W', 'var')
-        load('W3.mat');
-    end
-    C = SpectralClustering(W, 3, 2);
-end
-
+function mov = visualize_traj_clusters(C, traj_array, mosegParams)
 h = figure();
 movie_frame = 1;
 V = VideoReader(mosegParams.video_file);
-colors = hsv(3);
+colors = hsv(size(C,2));
 for f=mosegParams.startframe : mosegParams.endframe
     base_img = read(V, f);
     for cluster = 1:size(C,2)
@@ -23,4 +17,5 @@ for f=mosegParams.startframe : mosegParams.endframe
     title(sprintf('%d clusters', 2));
     mov(movie_frame) = getframe(h);
     movie_frame = movie_frame+1;
+end
 end
