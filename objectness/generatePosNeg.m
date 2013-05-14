@@ -12,11 +12,13 @@
 function posneg = generatePosNeg(params)
 
 if params.primary_type == params.TYPE_IMAGE
-    struct = load(fullfile(params.trainingImages, 'structGT.mat'));
+    fprintf('gpn: load images structGT\n');
+    ld = load(fullfile(params.trainingImages, 'structGT.mat'));
 elseif params.primary_type == params.TYPE_VIDEO
-    struct = load(fullfile(params.trainingVideos, 'structGT.mat'));
+    fprintf('gpn: load videos structGT\n');
+    ld = load(fullfile(params.trainingVideos, 'structGT.mat'));
 end
-structGT= struct.structGT;
+structGT= ld.structGT;
 
 for idx = length(structGT):-1:1
     if structGT(idx).type == params.TYPE_IMAGE

@@ -78,7 +78,7 @@ parfor idxThr = 1:length(params.MS.domain(level,:)) %loop over the possible thre
 end
 
 [~, iBest] = max(scores(2,:));
-thresholdOpt = scores(3, iBest);
+thresholdOpt = scores(1, iBest);
 
 save(fullfile(params.data, sprintf('learnMS_%d.mat', scale)), 'scores');
 
