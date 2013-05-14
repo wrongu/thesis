@@ -1,5 +1,5 @@
 function params = learnParameters(pathNewTrainingFolder, cues, ...
-    dir_root, skip_precomputed)
+    params, dir_root, skip_precomputed)
 % learns the parameters of the objectness function: theta_MS (for 5 scales),
 % theta_CC, theta_ED, theta_SS and also the likelihoods corresp to each cue
 %
@@ -11,7 +11,7 @@ if nargin < 4
     skip_precomputed = false;
 end
 
-params = defaultParams(dir_root, 1);
+% params = defaultParams(dir_root, 1);
 
 if nargin == 1
     % train the parameters from another dataset
