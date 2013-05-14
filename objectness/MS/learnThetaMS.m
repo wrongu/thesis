@@ -1,22 +1,31 @@
 function thresholdOpt = learnThetaMS(params,scale)
 
 fprintf('Learning theta_MS for scale = %d \n',scale);
-bestScoreThreshold = -inf;
 level = find(params.MS.scale == scale);
-scores = zeros(3, size(params.MS.domain, 2));
-scores(1,:) = params.MS.domain(1,:);
+scores = zeros(2, size(params.MS.domain, 2));
+if params.primary_type == params.TYPE_IMAGE
+    struct = load(fullfile(params.trainingImages, 'structGT.mat'));
+elseif params.primary_type == params.TYPE_VIDEO
+    struct = load(fullfile(params.trainingVideos, 'structGT.mat'));
+end
+structGT= struct.structGT;%training GT
 
 parfor idxThr = 1:length(params.MS.domain(level,:)) %loop over the possible threshold values
     
-    threshold = params.MS.domain(level,idxThr);    
-    struct = load(fullfile(params.trainingImages, 'structGT.mat'));
-    structGT= struct.structGT;%training GT
+    threshold = params.MS.domain(level,idxThr);
     
     scoreThreshold = 0;
     
     for idxImgGT = 1:length(structGT) %for every img in GT
         
-        img = imread(fullfile(params.trainingImages, structGT(idxImgGT).img));
+        if structGT(idxImgGT).type == params.TYPE_IMAGE
+            img = imread(fullfile(params.trainingImages, ...
+                structGT(idxImgGT).img));
+        else
+            V = VideoReader(fullfile(params.trainingVideos, ...
+                structGT(idxImgGT).video_file));
+            img = read(V, structGT(idxImgGT).frame);
+        end
         
         saliencyMAP = saliencyMap(img,params.MS.filtersize,scale);%compute the saliency map - for the current scale            
         thrmap = saliencyMAP >= threshold;                    
@@ -56,7 +65,7 @@ parfor idxThr = 1:length(params.MS.domain(level,:)) %loop over the possible thre
         
     end
     
-    scores(:, idxThr) = [params.MS.domain(level, idxThr) scoreThreshold threshold]';
+    scores(:, idxThr) = [threshold scoreThreshold]';
     
 %     scores(2, idxThr) = scoreThreshold;
 %     scores(3, idxThr) = threshold;
@@ -68,10 +77,10 @@ parfor idxThr = 1:length(params.MS.domain(level,:)) %loop over the possible thre
 %     fprintf('Best current theta_MS for scale = %d is %f \n',scale,thresholdOpt)    
 end
 
-[bestScoreThreshold, iBest] = max(scores(2,:));
+[~, iBest] = max(scores(2,:));
 thresholdOpt = scores(3, iBest);
 
-save('Data/learnMS.mat', 'scores');
+save(fullfile(params.data, sprintf('learnMS_%d.mat', scale)), 'scores');
 
 end
 
