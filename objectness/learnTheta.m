@@ -7,8 +7,12 @@ if nargin < 2
 end
     
 try
-    struct = load(fullfile(params.trainingImages, 'Examples', 'posneg.mat'));
-    posneg = struct.posneg;
+    if params.primary_type == params.TYPE_IMAGE
+        ld = load(fullfile(params.trainingImages, 'Examples', 'posneg.mat'));
+    elseif params.primary_type == params.TYPE_VIDEO
+        ld = load(fullfile(params.trainingVideos, 'Examples', 'posneg.mat'));
+    end
+    posneg = ld.posneg;
     clear struct;
 catch    
     posneg = generatePosNeg(params);
@@ -39,7 +43,7 @@ thetaOpt = params.(cue).domain(iBest);
 likelihoodOpt = all_likelihoods{iBest};
 pobj = scores(3, iBest);
 
-save(sprintf('Data/learn%s.mat', cue), 'scores');
+save(fullfile(params.data, sprintf('learn%s.mat', cue)), 'scores');
 
 end
 

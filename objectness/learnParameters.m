@@ -11,10 +11,9 @@ if nargin < 4
     skip_precomputed = false;
 end
 
-% params = defaultParams(dir_root, 1);
-
 if nargin == 1
     % train the parameters from another dataset
+    params = defaultParams(dir_root, 1);
     params.trainingImages = pathNewTrainingFolder;
     origDir = pwd;
     cd(params.trainingImages);
@@ -22,9 +21,9 @@ if nargin == 1
     cd(origDir);
 end
 
-if skip_precomputed && exist(fullfile('Data', 'learnMS.mat'), 'file')
+if skip_precomputed && exist(fullfile(params.data, ...
+        sprintf('learnMS_%d.mat', params.MS.scale(end))), 'file')
     fprintf('skipping learnThetaMS\n');
-    load(fullfile('Data', 'learnMS.mat'));
 else
     %learn parameters for MS
     for idx3 = 1: length(params.MS.scale)
@@ -38,12 +37,21 @@ if skip_precomputed && exist(fullfile(params.yourData, 'MSlikelihood.mat'), 'fil
     load(fullfile(params.yourData, 'MSlikelihood.mat'));
 else
     try
-        ld2 = load(fullfile(params.trainingImages, 'Examples', 'posnegMS.mat'));
+        if params.primary_type == params.TYPE_IMAGE
+            ld2 = load(fullfile(params.trainingImages, 'Examples', 'posnegMS.mat'));
+        elseif params.primary_type == params.TYPE_VIDEO
+            ld2 = load(fullfile(params.trainingVideos, 'Examples', 'posnegMS.mat'));
+        end
         posnegMS = ld2.posnegMS;
         clear ld2;
     catch
         posnegMS = generatePosNegMS(params);
-        save(fullfile(params.trainingImages, 'Examples', 'posnegMS.mat'),'posnegMS');
+        
+        if params.primary_type == params.TYPE_IMAGE
+            save(fullfile(params.trainingImages, 'Examples', 'posnegMS.mat'),'posnegMS');
+        elseif params.primary_type == params.TYPE_VIDEO
+            save(fullfile(params.trainingVideos, 'Examples', 'posnegMS.mat'),'posnegMS');
+        end
     end
     
     [likelihood, pObj] = deriveLikelihoodMS(posnegMS,params);
