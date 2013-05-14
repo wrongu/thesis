@@ -17,8 +17,6 @@ params.min_window_width  = 10;
 params.distribution_windows = 100000;
 params.sampled_windows = 1000;
 params.imageType = 'jpg';
-params.data = [dirRoot '/Data/'];
-params.yourData = [dirRoot '/Data/yourData/'];
 params.pobj = 0.0797;
 params.tempdir = [dirRoot '/tmpdir/'];
 params.pascalThreshold = 0.5;
@@ -29,8 +27,12 @@ params.trainingImages = fullfile(dirRoot, 'Training', 'Images');
 % type-dependent parameters
 if type == TYPE_VIDEO
     params.cues = {'MS','CC','SS', 'OF', 'MO'};%full objectness measure
+params.data = [dirRoot '/Data/Videos/'];
+params.yourData = [dirRoot '/Data/Videos/yourData/'];
 elseif type == TYPE_IMAGE
     params.cues = {'MS','CC','SS'};%full objectness measure
+params.data = [dirRoot '/Data/Images/'];
+params.yourData = [dirRoot '/Data/Images/yourData/'];
 end
 
 % 'global variables' that distinguish between video and image
