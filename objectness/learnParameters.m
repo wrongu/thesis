@@ -21,14 +21,17 @@ if nargin == 1
     cd(origDir);
 end
 
-if skip_precomputed && exist(fullfile(params.data, ...
-        sprintf('learnMS_%d.mat', params.MS.scale(end))), 'file')
-    fprintf('skipping learnThetaMS\n');
-else
-    %learn parameters for MS
-    for idx3 = 1: length(params.MS.scale)
-        scale = params.MS.scale(idx3);
-        params.MS.theta(idx3) = learnThetaMS(params,scale);
+%learn parameters for MS
+for idx = 1: length(params.MS.scale)
+    scale = params.MS.scale(idx);
+    if skip_precomputed && exist(fullfile(params.data, ...
+            sprintf('learnMS_%d.mat', scale)), 'file')
+        fprintf('skipping learnThetaMS @ %d\n', scale);
+        ld = load(fullfile(params.data, sprintf('learnMS_%d.mat', scale)));
+        [~, ind] = max(ld.scores(2,:));
+        params.MS.theta(idx) = ld.scores(1,ind);
+    else
+        params.MS.theta(idx) = learnThetaMS(params,scale);
     end
 end
 
@@ -74,6 +77,9 @@ for cid = 1:length(cues)
         save(savefile,'likelihood');
     else
         fprintf('skipping cue %s\n', cue);
+        ld = load(fullfile(params.data, sprintf('learn%s.mat', upper(cue))));
+        [~, ind] = max(ld.scores(2,:));
+        params.(cue).theta = ld.scores(1,ind);
     end
 end
 
