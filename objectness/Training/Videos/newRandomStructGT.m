@@ -22,7 +22,7 @@ for idx = 1:num_examples
         datname = [structGT(idx).video_file(1:end-3) 'mat'];
         annot = load(fullfile(params.trainingVideos, 'Annotations', datname));
         % choose random frame within allowable bounds from params
-        range = params.MO.preframes+1 : annot.num_frames - params.MO.postframes;
+        range = params.MOS.preframes+1 : annot.num_frames - params.MOS.postframes;
         if ~isempty(range)
             f = range(randi(length(range)));
             structGT(idx).frame = f;

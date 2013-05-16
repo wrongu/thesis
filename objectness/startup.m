@@ -5,7 +5,7 @@ addpath([pwd '/MS/']);
 addpath([pwd '/SS/']);
 addpath([pwd '/ED/']);
 addpath([pwd '/OF/']);
-addpath([pwd '/MO/']);
+addpath([pwd '/MOS/']);
 if ~exist('LDOF', 'file')
     addpath([pwd '/../LDOF_Matlab']);
 end

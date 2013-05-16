@@ -26,7 +26,7 @@ params.trainingImages = fullfile(dirRoot, 'Training', 'Images');
 
 % type-dependent parameters
 if type == TYPE_VIDEO
-    params.cues = {'MS','CC','SS', 'OF', 'MO'};%full objectness measure
+    params.cues = {'MS','CC','SS', 'OFD', 'OFM', 'MOS'};%full objectness measure
 params.data = [dirRoot '/Data/Videos/'];
 params.yourData = [dirRoot '/Data/Videos/yourData/'];
 elseif type == TYPE_IMAGE
@@ -84,25 +84,34 @@ params.SS.numberBins = length(params.SS.bincenters) - 1;
 if type == TYPE_VIDEO
     % params for OF (optic flow)
     % TODO - choose domain, theta, bincenters, pixelDistance, etc more intelligently
-    params.OF.name = 'Optic-Flow-Coherence';
-    params.OF.theta = 50;
-    params.OF.domain = 1:1:100;
-    params.OF.pixelDistance = 8;
-    params.OF.imageBorder = 0;
-    params.OF.bincenters = 0:0.01:1;
-    params.OF.numberBins = length(params.OF.bincenters) - 1;
-    params.OF.required_path = fullfile(dirRoot, '..', 'LDOF_Matlab');
+    params.OFD.name = 'Optic-Flow-Direction';
+    params.OFD.theta = 50;
+    params.OFD.domain = 1:1:100;
+    params.OFD.pixelDistance = 8;
+    params.OFD.imageBorder = 0;
+    params.OFD.bincenters = 0:0.01:1;
+    params.OFD.numberBins = length(params.OFD.bincenters) - 1;
+    params.OFD.required_path = fullfile(dirRoot, '..', 'LDOF_Matlab');
+
+    params.OFM.name = 'Optic-Flow-Magnitude';
+    params.OFM.theta = 50;
+    params.OFM.domain = 1:1:100;
+    params.OFM.pixelDistance = 8;
+    params.OFM.imageBorder = 0;
+    params.OFM.bincenters = 0:0.01:1;
+    params.OFM.numberBins = length(params.OFM.bincenters) - 1;
+    params.OFM.required_path = fullfile(dirRoot, '..', 'LDOF_Matlab');
     
-    % params for MO (motion segmentation)
-    params.MO.name = 'Motion-Segmentation';
-    params.MO.theta = 8;
-    params.MO.preframes = 15;
-    params.MO.postframes = 0;
-    params.MO.sampling = 8;
-    params.MO.domain = 2:8;
-    params.MO.pixelDistance = 8;
-    params.MO.imageBorder = 0;
-    params.MO.bincenters = 0:0.01:1;
-    params.MO.numberBins = length(params.MO.bincenters) - 1;
-    params.MO.required_path = fullfile(dirRoot, '..', 'MoSeg_Matlab');
+    % params for MOS (motion segmentation)
+    params.MOS.name = 'Motion-Segmentation';
+    params.MOS.theta = 8;
+    params.MOS.preframes = 15;
+    params.MOS.postframes = 0;
+    params.MOS.sampling = 8;
+    params.MOS.domain = 2:8;
+    params.MOS.pixelDistance = 8;
+    params.MOS.imageBorder = 0;
+    params.MOS.bincenters = 0:0.01:1;
+    params.MOS.numberBins = length(params.MOS.bincenters) - 1;
+    params.MOS.required_path = fullfile(dirRoot, '..', 'MoSeg_Matlab');
 end

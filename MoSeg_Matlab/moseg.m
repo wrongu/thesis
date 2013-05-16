@@ -6,10 +6,9 @@ function [clusters, trajectories, W] = moseg(mosegParams, debug)
 %   mosegParams - see structMosegParams
 %
 % Outputs:
-%   clusters - T x K indicator matrix. Each of the T rows corresponds to a
-%   trajectory. clusters(t, k) == 1 indicates that trajectory t belongs to
-%   cluster k. clusters contains exactly one 1 in each row, all else is
-%   zeros
+%   clusters - T x 1 cluster matrix. Each of the T rows corresponds to a
+%   trajectory. clusters(t) == k indicates that trajectory t belongs to
+%   cluster k.
 %   trajectories - the struct array of trajectories. see structTrajectories
 %   W - the affinity matrix from which clusters were computed
 
@@ -33,12 +32,6 @@ end
 W = createTrajectoryAffinityMatrix(trajectories, fflows, mosegParams);
 
 % segment trajectories using spectral clustering on the affinity matrix
-clusters = SpectralClustering(W, mosegParams.num_clusters, 2);
-
-for k = 1:size(clusters,2)
-    for tr = find(clusters(:,k))'
-        trajectories(tr).cluster = k;
-    end
-end
+clusters = segment_by_affinity(W, trajectories, mosegParams);
 
 end

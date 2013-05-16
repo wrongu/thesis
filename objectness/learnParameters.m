@@ -63,9 +63,9 @@ else
     
 end
 
-%learn parameters for CC, ED, SS, OF, MO
+%learn parameters for CC, ED, SS, OF, MOS
 if nargin < 2
-    cues = {'CC','ED','SS', 'OF', 'MO'};
+    cues = {'CC','ED','SS', 'OFD', 'OFM', 'MOS'};
 end
 
 for cid = 1:length(cues)

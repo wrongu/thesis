@@ -108,12 +108,17 @@ if nargin<4
             windows = generateWindows(img,'dense', params, cue);
             boxes = computeScores(descGT, cue, params, windows);
             
-        case 'OF'
+        case 'OFD'
             
             windows = generateWindows(img, 'dense', params, cue);%generate windows
             boxes = computeScores(descGT, cue, params, windows);
             
-        case 'MO'
+        case 'OFM'
+            
+            windows = generateWindows(img, 'dense', params, cue);%generate windows
+            boxes = computeScores(descGT, cue, params, windows);
+            
+        case 'MOS'
             
             windows = generateWindows(img, 'dense', params, cue);%generate windows
             boxes = computeScores(descGT, cue, params, windows);
@@ -239,26 +244,37 @@ else
             score = ones(size(windows,1),1) - (sum(min(intersectionSuperpixels,repmat(areaSuperpixels,size(windows,1),1) - intersectionSuperpixels),2)./areaWindows);
             boxes = [windows score];
             
-        case 'OF'
+        case 'OFD'
             % checkMotionParams(params);
-            assert(descGT.type == 2, 'cue OF is undefined for images');
+            assert(descGT.type == 2, 'cue OFD is undefined for images');
             [h, w, ~] = size(img);
             ldof_params = get_para_flow(h, w);
             im2 = read(V, descGT.frame+1);
             % compute flow
             [F, ~, ~] = LDOF(img, im2, ldof_params);
             
-            boxes = scoreOF(F, windows, params.OF.theta);
+            boxes = scoreOFD(F, windows, params.OF.theta);
             
-        case 'MO'
+        case 'OFM'
             % checkMotionParams(params);
-            assert(descGT.type == 2, 'cue MO is undefined for images');
-            startframe = descGT.frame - params.MO.preframes;
-            endframe = descGT.frame + params.MO.postframes;
+            assert(descGT.type == 2, 'cue OFM is undefined for images');
+            [h, w, ~] = size(img);
+            ldof_params = get_para_flow(h, w);
+            im2 = read(V, descGT.frame+1);
+            % compute flow
+            [F, ~, ~] = LDOF(img, im2, ldof_params);
+            
+            boxes = scoreOFM(F, windows, params.OF.theta);
+            
+        case 'MOS'
+            % checkMotionParams(params);
+            assert(descGT.type == 2, 'cue MOS is undefined for images');
+            startframe = descGT.frame - params.MOS.preframes;
+            endframe = descGT.frame + params.MOS.postframes;
             moseg_params = structMosegParams(...
                 fullfile(params.trainingVideos, descGT.video_file), ...
                 startframe, endframe);
-            moseg_params.num_clusters = params.MO.theta;
+            moseg_params.num_clusters = params.MOS.theta;
             [clusters, trajectories, ~] = moseg(moseg_params);
             
             % TODO - get a score
