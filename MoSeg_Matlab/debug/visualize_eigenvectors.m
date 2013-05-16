@@ -1,4 +1,6 @@
-[eigenvectors, lambda] = laplacian_eigenvectors(W, mosegParams);
+[eigenvectors, lambda] = laplacian_eigenvectors(W, 12);
+
+selection = (lambda > 0) & (lambda < mosegParams.cluster_threshold);
 
 % plot them
 m = sum(selection);

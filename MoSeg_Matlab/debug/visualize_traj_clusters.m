@@ -2,14 +2,15 @@ function mov = visualize_traj_clusters(C, traj_array, mosegParams)
 h = figure();
 movie_frame = 1;
 V = VideoReader(mosegParams.video_file);
-colors = hsv(size(C,2));
+num_clusters = length(unique(C));
+colors = hsv(num_clusters);
 for f=mosegParams.startframe : mosegParams.endframe
     base_img = read(V, f);
-    for cluster = 1:size(C,2)
+    for cluster = 1:num_clusters
         selected_trajectories = traj_array(...
             ([traj_array.startframe] <= f) & ...
             ([traj_array.endframe] >= f) & ...
-            (C(:,cluster)'));
+            (C' == cluster));
         base_img = drawTrackFrame(base_img, selected_trajectories, f, ...
             colors(cluster,:));
     end
