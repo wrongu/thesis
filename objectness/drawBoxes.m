@@ -1,4 +1,4 @@
-function drawBoxes(boxes,base_color,linewidth)
+function handle = drawBoxes(boxes,base_color,linewidth)
 % boxes=[xmin ymin xmax ymax scoreObjectness]
 
 if nargin < 3
@@ -23,7 +23,7 @@ for idx = 1:size(boxes,1)
     color = base_color*score/maxscore;
     
     %draw left line
-    line([xmin xmin],[ymin ymax],'Color',color,'Linewidth',linewidth);
+    handle = line([xmin xmin],[ymin ymax],'Color',color,'Linewidth',linewidth);
     
     %draw right line
     line([xmax xmax],[ymin ymax],'Color',color,'Linewidth',linewidth);
