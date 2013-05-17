@@ -18,7 +18,7 @@ posneg(1:length(structGT)) = struct( ...
     'frame', 0, ...
     'img', []);
 
-parfor idx = 1:length(structGT)
+for idx = 1:length(structGT)
     posneg(idx).type = structGT(idx).type;
     if structGT(idx).type == params.TYPE_IMAGE
         posneg(idx).img = imread(fullfile(params.trainingImages, structGT(idx).img));

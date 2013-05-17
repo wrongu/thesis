@@ -7,7 +7,9 @@ addpath([pwd '/ED/']);
 addpath([pwd '/OF/']);
 addpath([pwd '/MOS/']);
 if ~exist('LDOF', 'file')
-    addpath([pwd '/../LDOF_Matlab']);
+    root = pwd;
+    cd('../LDOF_Matlab'); startup;
+    cd(root); clear root;
 end
 display('Loading the default parameters ...');
 params = defaultParams([pwd '/']);

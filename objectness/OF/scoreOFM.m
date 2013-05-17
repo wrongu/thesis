@@ -42,7 +42,7 @@ similarity = abs(norm_in - norm_ring) ./ (norm_in + norm_ring);
 
 % higher score goes to windows with low similarity to surrounding outside
 % area.
-scores = exp(-similarity);
+scores = 1 - similarity';
 
 boxes = [windows scores];
 

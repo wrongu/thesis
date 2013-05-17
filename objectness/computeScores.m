@@ -29,7 +29,7 @@ if descGT.type == params.TYPE_IMAGE
         img = descGT.img;
     end
 elseif descGT.type == params.TYPE_VIDEO
-    V = VideoReader(descGT.video_file);
+    V = VideoReader(fullfile(params.trainingVideos, descGT.video_file));
     img = read(V, descGT.frame);
 end
 
@@ -253,7 +253,7 @@ else
             % compute flow
             [F, ~, ~] = LDOF(img, im2, ldof_params);
             
-            boxes = scoreOFD(F, windows, params.OF.theta);
+            boxes = scoreOFD(F, windows, params.OFD.theta);
             
         case 'OFM'
             % checkMotionParams(params);
@@ -264,7 +264,7 @@ else
             % compute flow
             [F, ~, ~] = LDOF(img, im2, ldof_params);
             
-            boxes = scoreOFM(F, windows, params.OF.theta);
+            boxes = scoreOFM(F, windows, params.OFM.theta);
             
         case 'MOS'
             % checkMotionParams(params);

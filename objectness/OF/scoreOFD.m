@@ -41,14 +41,14 @@ unit_ring = mean_ring ./ [norm_ring; norm_ring];
 
 % similarity defined as cosine of angle between mean inner flow and mean
 % surrounding flow. computed using dot product of unit vectors.
-similarity = sum(unit_in' .* unit_ring');
+similarity = sum(unit_in .* unit_ring)';
 % shift values from [-1, 1] to [0, 1] so that 180-degree opposite vectors
 % are given score 0
 similarity = 0.5 + similarity * 0.5;
 
 % higher score goes to windows with low similarity to surrounding outside
 % area.
-scores = exp(-similarity);
+scores = 1 - similarity;
 
 boxes = [windows scores];
 

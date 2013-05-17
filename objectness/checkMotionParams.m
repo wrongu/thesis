@@ -2,7 +2,6 @@
 function [] = checkMotionParams(params)
 % checkMotionParams(params) ensure that 'params' is valid for motion cues
 
-assert(isfield(params, 'OF'), 'params.OF does not exist');
 assert(isfield(params, 'OFD'), 'params.OF does not exist');
 assert(isfield(params, 'OFM'), 'params.OF does not exist');
 assert(isfield(params, 'MOS'), 'params.MOS does not exist');

@@ -1,5 +1,9 @@
 function [F,c1,c2]=LDOF(im1,im2,para,verbose)
 
+if nargin < 4
+	verbose = false;
+end
+
 if isa(im1, 'char')
     im1=imread(im1);
     im2=imread(im2);

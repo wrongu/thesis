@@ -16,7 +16,11 @@ try
     clear struct;
 catch    
     posneg = generatePosNeg(params);
-    save(fullfile(params.trainingImages, 'Examples', 'posneg.mat'),'posneg');
+    if params.primary_type == params.TYPE_IMAGE
+        save(fullfile(params.trainingImages, 'Examples', 'posneg.mat'), 'posneg');
+    elseif params.primary_type == params.TYPE_VIDEO
+        save(fullfile(params.trainingVideos, 'Examples', 'posneg.mat'), 'posneg');
+    end
 end
 
 scores = zeros(3, length(params.(cue).domain));
