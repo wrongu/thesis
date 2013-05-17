@@ -247,25 +247,31 @@ else
         case 'OFD'
             % checkMotionParams(params);
             assert(descGT.type == 2, 'cue OFD is undefined for images');
-            [h, w, ~] = size(img);
-            ldof_params = get_para_flow(h, w);
-            im2 = read(V, descGT.frame+1);
-            % compute flow
-            fprintf('OFD: computing flow for %s\n', descGT.video_file);
-            [F, ~, ~] = LDOF(img, im2, ldof_params);
-            
+            if isfield(descGT, 'fflow')
+                F = descGT.fflow;
+            else
+                [h, w, ~] = size(img);
+                ldof_params = get_para_flow(h, w);
+                im2 = read(V, descGT.frame+1);
+                % compute flow
+                fprintf('OFD: computing flow for %s\n', descGT.video_file);
+                [F, ~, ~] = LDOF(img, im2, ldof_params);
+            end
             boxes = scoreOFD(F, windows, params.OFD.theta);
             
         case 'OFM'
             % checkMotionParams(params);
             assert(descGT.type == 2, 'cue OFM is undefined for images');
-            [h, w, ~] = size(img);
-            ldof_params = get_para_flow(h, w);
-            im2 = read(V, descGT.frame+1);
-            % compute flow
-            fprintf('OFM: computing flow for %s\n', descGT.video_file);
-            [F, ~, ~] = LDOF(img, im2, ldof_params);
-            
+            if isfield(descGT, 'fflow')
+                F = descGT.fflow;
+            else
+                [h, w, ~] = size(img);
+                ldof_params = get_para_flow(h, w);
+                im2 = read(V, descGT.frame+1);
+                % compute flow
+                fprintf('OFM: computing flow for %s\n', descGT.video_file);
+                [F, ~, ~] = LDOF(img, im2, ldof_params);
+            end
             boxes = scoreOFM(F, windows, params.OFM.theta);
             
         case 'MOS'

@@ -38,6 +38,11 @@ for idx = length(structGT):-1:1
             posneg(idx).video_file));
         Vdata = get(V, {'Width', 'Height'});
         s = [Vdata{2} Vdata{1}];
+        % precompute flow since it is a time-consuming operation
+        im1 = read(V, structGT(idx).frame);
+        im2 = read(V, structGT(idx).frame+1);
+        para = get_para_flow(s(1), s(2));
+        posneg(idx).fflow = LDOF(im1, im2, para);
     end
     windows = generateWindows(s,'uniform',params);
     posneg(idx).examples = windows;
