@@ -1,25 +1,24 @@
-function params = learnParameters(pathNewTrainingFolder, cues, ...
-    params, dir_root, skip_precomputed)
+function params = learnParameters(cues, params, skip_precomputed )
 % learns the parameters of the objectness function: theta_MS (for 5 scales),
 % theta_CC, theta_ED, theta_SS and also the likelihoods corresp to each cue
 %
 % dir_root - path where the software is installed - see README Setting things up
+% if nargin < 3
+%     dir_root = [pwd '/'];
+% end
 if nargin < 3
-    dir_root = [pwd '/'];
-end
-if nargin < 4
     skip_precomputed = false;
 end
 
-if nargin == 1
-    % train the parameters from another dataset
-    params = defaultParams(dir_root, 1);
-    params.trainingImages = pathNewTrainingFolder;
-    origDir = pwd;
-    cd(params.trainingImages);
-    mkdir('Examples');
-    cd(origDir);
-end
+% if nargin == 1
+%     % train the parameters from another dataset
+%     params = defaultParams(dir_root, 1);
+%     params.trainingImages = pathNewTrainingFolder;
+%     origDir = pwd;
+%     cd(params.trainingImages);
+%     mkdir('Examples');
+%     cd(origDir);
+% end
 
 %learn parameters for MS
 for idx = 1: length(params.MS.scale)
@@ -64,7 +63,7 @@ else
 end
 
 %learn parameters for CC, ED, SS, OF, MOS
-if nargin < 2
+if nargin < 1
     cues = {'CC','ED','SS', 'OFD', 'OFM', 'MOS'};
 end
 

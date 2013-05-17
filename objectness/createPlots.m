@@ -35,17 +35,22 @@ end
 %  LIKELIHOOD PLOTS
 % ==================
 
-cues = {'MS', 'CC', 'ED', 'SS'};
+cues = {'MS', 'CC', 'ED', 'SS', 'OFD', 'OFM'};
 
 for i=1:length(cues)
     cue = cues{i};
-    plots.likelihood.(cue) = figure();
-    ld = load(fullfile(params.yourData, [cue 'likelihood.mat']));
-    domain = params.(cue).bincenters;
-    plot(domain, ld.likelihood(1,:), domain, ld.likelihood(2,:));
-    legend(['p(' cue ' | obj)'], ['p(' cue ' | bg)']);
-    xlabel(['score ' cue]);
-    ylabel('probability');
+    file = fullfile(params.yourData, [cue 'likelihood.mat']);
+    if exist(file, 'file')
+        plots.likelihood.(cue) = figure();
+        ld = load(file);
+        domain = params.(cue).bincenters;
+        plot(domain, ld.likelihood(1,:), domain, ld.likelihood(2,:));
+        legend(['p(' cue ' | obj)'], ['p(' cue ' | bg)']);
+        xlabel(['score ' cue]);
+        ylabel('probability');
+    else
+        fprintf('no data for cue %s\n', cue);
+    end
 end
 
 

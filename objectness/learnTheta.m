@@ -28,6 +28,8 @@ all_likelihoods = cell(1, length(params.(cue).domain));
 
 parfor idx = 1:length(params.(cue).domain)
     
+    fprintf('learning %s: %d of %d\n', cue, idx, length(params.(cue).domain));
+    
     theta = params.(cue).domain(idx);
     [likelihood, p, logTotal] = deriveLikelihood(posneg,theta,params,cue);
     
