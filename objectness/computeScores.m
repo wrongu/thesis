@@ -251,6 +251,7 @@ else
             ldof_params = get_para_flow(h, w);
             im2 = read(V, descGT.frame+1);
             % compute flow
+            fprintf('OFD: computing flow for %s\n', descGT.video_file);
             [F, ~, ~] = LDOF(img, im2, ldof_params);
             
             boxes = scoreOFD(F, windows, params.OFD.theta);
@@ -262,6 +263,7 @@ else
             ldof_params = get_para_flow(h, w);
             im2 = read(V, descGT.frame+1);
             % compute flow
+            fprintf('OFM: computing flow for %s\n', descGT.video_file);
             [F, ~, ~] = LDOF(img, im2, ldof_params);
             
             boxes = scoreOFM(F, windows, params.OFM.theta);
