@@ -20,8 +20,8 @@ sumU_ring = computeIntegralImageScores(intU, windows_out) - sumU_in;
 sumV_ring = computeIntegralImageScores(intV, windows_out) - sumV_in;
 
 % take averages for inside and outside
-areas_in(areas_in == 0) = inf;
-areas_ring(areas_ring == 0) = inf;
+areas_in(areas_in == 0) = eps;
+areas_ring(areas_ring == 0) = eps;
 
 meanU_in = sumU_in ./ areas_in;
 meanV_in = sumV_in ./ areas_in;
@@ -46,8 +46,7 @@ similarity = sum(unit_in .* unit_ring)';
 % are given score 0
 similarity = 0.5 + similarity * 0.5;
 
-% higher score goes to windows with low similarity to surrounding outside
-% area.
+% higher score goes to windows with low similarity to surrounding area.
 scores = 1 - similarity;
 
 boxes = [windows scores];

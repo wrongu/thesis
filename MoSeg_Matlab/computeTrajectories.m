@@ -12,11 +12,10 @@ function [traj_array, forward_flows, backward_flows] = ...
 
 verifyMosegParams(mosegParams, 'computeTrajectories.m');
 
-V = VideoReader(mosegParams.video_file);
-Vdata = get(V, {'Width', 'Height'});
-width = Vdata{1};
-height = Vdata{2};
-ldof_params = get_para_flow(height, width);
+vid = mosegParams.video_file;
+V = VideoReader(vid);
+Vdata = get(V, {'Height', 'Width', 'NumberOfFrames'});
+nframes = Vdata{3};
 
 traj_array = initializeTrajectories(read(V, mosegParams.startframe), mosegParams);
 % trajectories before this index are 'closed.' that is, they have been
@@ -30,14 +29,24 @@ forward_flows = cell(1, length(frames));
 backward_flows = cell(1, length(frames));
 parfor i=1:length(frames)
     f = frames(i);
-    Icurr = read(V, f);
-    Inext = read(V, f+1);
-    fprintf('forward flow %d\n', i);
-    [flow, ~, ~] = LDOF(Icurr, Inext, ldof_params, false);
-    forward_flows{i} = flow;
-    fprintf('backward flow %d\n', i);
-    [back_flow, ~, ~] = LDOF(Inext, Icurr, ldof_params, false);
-    backward_flows{i} = back_flow;
+    if f < nframes
+        fprintf('forward flow %d\n', i);
+        flow = getFlow(vid, f, 'forward', V);
+        forward_flows{i} = flow;
+    else
+        forward_flows{i} = [];
+    end
+    if f > 1
+        fprintf('backward flow %d\n', i);
+        back_flow = getFlow(vid, f, 'reverse', V);
+        backward_flows{i} = back_flow;
+    else
+        backward_flows{i} = [];
+    end
+    %     Icurr = read(V, f);
+    %     Inext = read(V, f+1);
+    %     [flow, ~, ~] = LDOF(Icurr, Inext, ldof_params, false);
+    %     [back_flow, ~, ~] = LDOF(Inext, Icurr, ldof_params, false);
 end
 
 % main loop to build trajectories

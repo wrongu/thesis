@@ -1,3 +1,4 @@
+addpath([pwd '..']);
 addpath([pwd '/']);
 addpath([pwd '/MEX/']);
 addpath([pwd '/CC/']);

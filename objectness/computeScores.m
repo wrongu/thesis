@@ -250,12 +250,10 @@ else
             if isfield(descGT, 'fflow')
                 F = descGT.fflow;
             else
-                [h, w, ~] = size(img);
-                ldof_params = get_para_flow(h, w);
-                im2 = read(V, descGT.frame+1);
                 % compute flow
-                fprintf('OFD: computing flow for %s\n', descGT.video_file);
-                [F, ~, ~] = LDOF(img, im2, ldof_params);
+                fprintf('OFD: getting flow for %s\n', descGT.video_file);
+                F = getFlow(fullfile(params.trainingVideos, descGT.video_file), ...
+                    descGT.frame, 'forward');
             end
             boxes = scoreOFD(F, windows, params.OFD.theta);
             
@@ -265,12 +263,10 @@ else
             if isfield(descGT, 'fflow')
                 F = descGT.fflow;
             else
-                [h, w, ~] = size(img);
-                ldof_params = get_para_flow(h, w);
-                im2 = read(V, descGT.frame+1);
                 % compute flow
-                fprintf('OFM: computing flow for %s\n', descGT.video_file);
-                [F, ~, ~] = LDOF(img, im2, ldof_params);
+                fprintf('OFM: getting flow for %s\n', descGT.video_file);
+                F = getFlow(fullfile(params.trainingVideos, descGT.video_file), ...
+                    descGT.frame, 'forward');
             end
             boxes = scoreOFM(F, windows, params.OFM.theta);
             
