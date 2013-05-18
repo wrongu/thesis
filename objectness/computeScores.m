@@ -278,12 +278,31 @@ else
             moseg_params = structMosegParams(...
                 fullfile(params.trainingVideos, descGT.video_file), ...
                 startframe, endframe);
-            moseg_params.num_clusters = params.MOS.theta;
+            moseg_params.lambda = params.MOS.theta;
+            moseg_params.num_clusters = 8;
             [clusters, trajectories, ~] = moseg(moseg_params);
             
-            % TODO - get a score
+            [Iint, areas] = trajectoriesToIntegralImage(size(img), clusters, trajectories, descGT.frame);
+            areas(areas == 0) = inf;
             
-            boxes = [windows zeros(size(windows,1), 1)];
+            % copied from SS
+            intersectionSuperpixels = zeros(size(windows,1), size(Iint,3));
+            
+            for dim = 1:size(Iint,3)
+                intersectionSuperpixels(:,dim) = ...
+                    computeIntegralImageScores(Iint(:,:,dim),windows);
+            end
+            
+            repareas = repmat(areas,size(windows,1),1);
+            
+            scores = ones(size(windows,1),1) - ...
+                ( sum( ...
+                    min(intersectionSuperpixels, ...
+                        repareas - intersectionSuperpixels) ...
+                        ./ repareas, ...
+                    2));
+            
+            boxes = [windows scores];
             
         otherwise
             error('Option not known: check the cue names');
