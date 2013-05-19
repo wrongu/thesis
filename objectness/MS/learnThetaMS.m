@@ -10,7 +10,7 @@ elseif params.primary_type == params.TYPE_VIDEO
 end
 structGT= struct.structGT;%training GT
 
-parfor idxThr = 1:length(params.MS.domain(level,:)) %loop over the possible threshold values
+for idxThr = 1:length(params.MS.domain(level,:)) %loop over the possible threshold values
     
     threshold = params.MS.domain(level,idxThr);
     
