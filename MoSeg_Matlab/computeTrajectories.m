@@ -75,6 +75,11 @@ for i=1:nflows
     bv = back_flow(:,:,2);
     % loop over open trajectories. either extend them with new points or
     % close them.
+    if debug
+        fprintf('there are %d open trajectories\n', length(traj_array)-open_index+1);
+        %imshow(drawTrackFrame(read(V,f), traj_array, f));
+        %pause;
+    end
     for t = open_index:length(traj_array)
         % follow the optic flow vector to follow this point to the next
         % frame
@@ -130,10 +135,6 @@ for i=1:nflows
         end
     end
     
-    if debug && ~check_durations(traj_array, open_index)
-        pause;
-    end
-    
     % here, all trajectories have been updated for frame f. Some were
     % closed, so we need to re-initialize in textured areas of the image
     % just like for the first frame.
@@ -157,18 +158,5 @@ end
 % remove trajectories whose duration is only one frame (these give no
 % information to further processing, and only get in the way)
 traj_array = traj_array([traj_array.duration] > 1);
-
-end
-
-function ok = check_durations(traj_array, open_index)
-
-ok = true;
-
-for t = 1:open_index - 1;
-    if size(traj_array(t).points, 2) ~= traj_array(t).duration
-        fprintf('trajectory %d is inconsistent\n', t);
-        ok = false;
-    end
-end
 
 end
