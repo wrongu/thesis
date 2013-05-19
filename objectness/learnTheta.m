@@ -26,7 +26,9 @@ end
 scores = zeros(3, length(params.(cue).domain));
 all_likelihoods = cell(1, length(params.(cue).domain));
 
-parfor idx = 1:length(params.(cue).domain)
+% note: if this is loop is done as a parfor, it results in many instances of 
+% duplicate image or video processing.
+for idx = 1:length(params.(cue).domain)
     
     fprintf('learning %s: %d of %d\n', cue, idx, length(params.(cue).domain));
     
@@ -63,8 +65,11 @@ params.(cue).theta = theta_value;
 % params.distribution_windows. Ultimately, examplesPos and examplesNeg will
 % contain complementary examples and their union will be all of them. This
 % just preallocates enough space for *either* to have all examples.
-examplesPos = zeros(length(posneg) * params.distribution_windows,1);
-examplesNeg = zeros(length(posneg) * params.distribution_windows,1);
+% [deprecated: this doesn't work well with parallelization]
+% examplesPos = zeros(length(posneg) * params.distribution_windows,1);
+% examplesNeg = zeros(length(posneg) * params.distribution_windows,1);
+examplesPosCell = cell(1, length(posneg));
+examplesNegCell = cell(1, length(posneg));
 
 % count number of positive (object) and negative (background) windows from
 % the random set of windows in each training image
@@ -72,7 +77,7 @@ pos = 0;
 neg = 0;
 
 % loop over training images
-for idx = 1:length(posneg)
+parfor idx = 1:length(posneg)
     
     % get a score for all windows on this image according to the given cue
     temp_boxes = computeScores(posneg(idx),cue,params,posneg(idx).examples);
@@ -81,15 +86,15 @@ for idx = 1:length(posneg)
     % get all windows and scores that are considered positive (object)
     % examples
     indexPositive = find(posneg(idx).labels == 1);
-    examplesPos(pos+1:pos+length(indexPositive)) = posneg(idx).scores(indexPositive);
+    examplesPosCell{idx} = posneg(idx).scores(indexPositive);
     pos = pos + length(indexPositive);
     
     indexNegative = find(posneg(idx).labels == -1);
-    examplesNeg(neg+1:neg+length(indexNegative)) = posneg(idx).scores(indexNegative);
+    examplesNegCell{idx} = posneg(idx).scores(indexNegative);
     neg = neg + length(indexNegative);
 end
-examplesPos(pos+1:end) = [];
-examplesNeg(neg+1:end) = [];
+examplesPos = vertcat(examplesPosCell{:});
+examplesNeg = vertcat(examplesNegCell{:});
 
 % at this point, examplesPos contains all the *scores* of this cue that are
 % associated with objects. examplesNeg is, likewise, the scores of this cue
