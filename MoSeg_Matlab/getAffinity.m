@@ -6,7 +6,7 @@
 
 function [traj_array, W] = getAffinity(mosegParams, debug)
 
-if nargin < 3, debug = false; end
+if nargin < 2, debug = false; end
 
 fname = get_save_file(mosegParams);
 if exist(fname, 'file')
