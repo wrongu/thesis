@@ -13,7 +13,7 @@ else
     Vdata = get(reader, {'Height', 'Width'});
     h = Vdata{1}; w = Vdata{2};
     
-    for i=1:duration
+    parfor i=1:duration
         flows{i} = getFlow(file, start+i-1, 'forward', reader);
     end
     
@@ -23,7 +23,7 @@ else
     
     n = w*h;
     if debug, tic; end
-    parfor r = 1:h
+    for r = 1:h
         for c = 1:w
             if debug
                 progress('tracking point', w*(r-1)+c, n);
