@@ -7,7 +7,7 @@ W = pairwiseDist(traj_array, ...
     'Symmetric', 'true', ...
     'SparseOutput', 'true');
 
-save('W.mat', 'W');
+% save('W.mat', 'W');
 
 end
 
