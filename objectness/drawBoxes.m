@@ -20,7 +20,7 @@ for idx = 1:size(boxes,1)
     score = boxes(idx,5);
     %score = min(score*5,1);
     
-    color = base_color*score/maxscore;
+    color = base_color * double(score) / double(maxscore);
     
     %draw left line
     handle = line([xmin xmin],[ymin ymax],'Color',color,'Linewidth',linewidth);
