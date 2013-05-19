@@ -13,11 +13,10 @@
 %                               should be avoided
 
 function trajectory_array = initializeTrajectories(img, ...
-    mosegParams, other_points)
+    mosegParams, frame, other_points)
 
-if nargin < 3
-    other_points = [];
-end
+if nargin < 4, other_points = []; end
+if nargin < 3, frame = 1; end
 
 [h, w, ~] = size(img);
 
@@ -75,7 +74,7 @@ end
 
 mean_eigenvalue = mean([S.lambda2]);
 textured_points = S([S.lambda2] > mosegParams.init_threshold * mean_eigenvalue);
-trajectory_array = structTrajectory(length(textured_points), 1);
+trajectory_array = structTrajectory(length(textured_points), frame);
 
 for t=1:length(trajectory_array)
     trajectory_array(t).points = textured_points(t).img_pt;

@@ -10,6 +10,7 @@ labels = unique(C);
 
 % "area" is really the number of points in each cluster (on this frame)
 areas = arrayfun(@(l) sum(C == l), labels);
+if size(areas, 1) ~= 1, areas = areas'; end
 
 n_clusters = length(labels);
 
@@ -25,7 +26,7 @@ end
 
 % make integral image
 Iint = zeros(sz(1)+1, sz(2)+1, n_clusters);
-for ch = 1:sz(I,3)
+for ch = 1:size(I,3)
     Iint(:,:,ch) = computeIntegralImage(I(:,:,ch));
 end
 
