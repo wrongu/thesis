@@ -87,6 +87,7 @@ if type == TYPE_VIDEO
     params.OFD.name = 'Optic-Flow-Direction';
     params.OFD.theta = 50;
     params.OFD.domain = 1:1:100;
+    params.OFD.num_frames = 5;
     params.OFD.pixelDistance = 8;
     params.OFD.imageBorder = 0;
     params.OFD.bincenters = 0:0.01:1;
@@ -96,6 +97,7 @@ if type == TYPE_VIDEO
     params.OFM.name = 'Optic-Flow-Magnitude';
     params.OFM.theta = 50;
     params.OFM.domain = 1:1:100;
+    params.OFM.num_frames = 5;
     params.OFM.pixelDistance = 8;
     params.OFM.imageBorder = 0;
     params.OFM.bincenters = 0:0.01:1;

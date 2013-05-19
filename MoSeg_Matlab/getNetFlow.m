@@ -22,19 +22,19 @@ else
     
     
     n = w*h;
-    i = 1;
-    for r = 1:h
+    if debug, tic; end
+    parfor r = 1:h
         for c = 1:w
             if debug
-                progress('tracking point', i, n);
+                progress('tracking point', w*(r-1)+c, n);
             end
             new_p = track_point([r c]', flows);
             diff = new_p - [r c]';
             dy(r, c) = diff(1);
             dx(r, c) = diff(2);
-            i = i+1;
         end
     end
+    if debug, toc; end
     
     F = cat(3, dx, dy);
     

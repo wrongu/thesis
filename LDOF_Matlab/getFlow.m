@@ -16,6 +16,10 @@ function flow = getFlow(file, frame, fo_rev, reader)
 
 [path, name, ~] = fileparts(file);
 
+if ~exist(fullfile(path, 'flows'), 'file')
+    mkdir(fullfile(path, 'flows'));
+end
+
 matname = fullfile(path, 'flows', get_flow_file(name, frame, fo_rev));
 
 if exist(matname, 'file')
