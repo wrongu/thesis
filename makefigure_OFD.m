@@ -10,33 +10,8 @@ box = [annot.annotations{frame}.xtl, ...
     annot.annotations{frame}.xbr, ...
     annot.annotations{frame}.ybr];
 box = scale_box(V, box, annot.width, annot.height);
-h = Vdata{1}; w = Vdata{2};
 
-flows = cell(df,1);
-
-for f = 1:df
-    flows{f} = getFlow(file, frame+f-1, 'forward', V);
-end
-
-dx = zeros(h, w);
-dy = zeros(h, w);
-
-for r = 1:h
-    for c = 1:w
-        progress('tracking point', (r-1)*w+c, r*c);
-        new_p = track_point([r c]', flows);
-        diff = new_p - [r c]';
-        dy(r, c) = diff(1);
-        dx(r, c) = diff(2);
-    end
-end
-
-displacement = cat(3, dx/df, dy/df);
-
-save('misc/makefigure_OFD.mat', 'file', 'frame', 'displacement', 'df');
-
-% mosegParams = structMosegParams('objectness/Training/Videos/car08.avi', 125, 145);
-% [c, t, w] = moseg(mosegParams, true);
+displacement = getNetFlow(file, frame, df, V, true);
 
 im1 = read(V, frame);
 
