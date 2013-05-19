@@ -30,9 +30,11 @@ if ~exist('LDOF', 'file')
     clear root;
 end
 
-if ~exist('SpectralClustering', 'file')
-    fprintf('adding ../SpectralClustering/files to the path\n');
-    addpath('../SpectralClustering/files');
-end
+warning('off', 'stats:kmeans:EmptyCluster');
+
+%if ~exist('SpectralClustering', 'file')
+%    fprintf('adding ../SpectralClustering/files to the path\n');
+%    addpath('../SpectralClustering/files');
+%end
 
 mosegParams = structMosegParams('../data/Youtube/10class/penguin/03.avi', 1, 30);

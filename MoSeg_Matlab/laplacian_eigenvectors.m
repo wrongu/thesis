@@ -11,6 +11,11 @@ Dsq = spdiags(1./(Dsum .^ 0.5), 0, size(W, 1), size(W, 2));
 L = D - W;
 L = Dsq * L * Dsq;
 
-[eigenvectors, lambda] = eigs(L, n, 'SM');
+try
+    [eigenvectors, lambda] = eigs(L, n, 'SM');
+catch
+    fprintf('eigs failed. trying with +eps');
+    [eigenvectors, lambda] = eigs(L+eps, n, 'SM');
+end
 lambda = diag(lambda);
 end

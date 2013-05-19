@@ -8,7 +8,9 @@
 %   see structTrajectory.m for definition of trajectory struct
 
 function [traj_array, forward_flows, backward_flows] = ...
-    computeTrajectories(mosegParams)
+    computeTrajectories(mosegParams, debug)
+
+if nargin < 2, debug = false; end
 
 verifyMosegParams(mosegParams, 'computeTrajectories.m');
 
@@ -17,7 +19,8 @@ V = VideoReader(vid);
 Vdata = get(V, {'Height', 'Width', 'NumberOfFrames'});
 nframes = Vdata{3};
 
-traj_array = initializeTrajectories(read(V, mosegParams.startframe), mosegParams);
+traj_array = initializeTrajectories(read(V, mosegParams.startframe), ...
+    mosegParams, mosegParams.startframe);
 % trajectories before this index are 'closed.' that is, they have been
 % fully computed from start frame to end frame.
 open_index = 1;
@@ -27,17 +30,18 @@ open_index = 1;
 frames = mosegParams.startframe : mosegParams.endframe-1;
 forward_flows = cell(1, length(frames));
 backward_flows = cell(1, length(frames));
-parfor i=1:length(frames)
+nflows = length(frames);
+parfor i=1:nflows
     f = frames(i);
     if f < nframes
-        fprintf('forward flow %d\n', i);
+        if debug, fprintf('forward flow %d of %d\n', i, nflows); end
         flow = getFlow(vid, f, 'forward', V);
         forward_flows{i} = flow;
     else
         forward_flows{i} = [];
     end
     if f > 1
-        fprintf('backward flow %d\n', i);
+        if debug, fprintf('backward flow %d of %d\n', i, nflows); end
         back_flow = getFlow(vid, f, 'reverse', V);
         backward_flows{i} = back_flow;
     else
@@ -51,9 +55,9 @@ end
 
 % main loop to build trajectories
 Inext = read(V, mosegParams.startframe);
-for i=1:length(frames)
+for i=1:nflows
     f = frames(i);
-    progress('trajectories: frame ', f, mosegParams.endframe-1);
+    if debug, fprintf('trajectories: frame %d of %d\n', f, mosegParams.endframe-1); end
     % get forward flow from frame f to frame f+1
     flow = forward_flows{i};
     u = flow(:,:,1); % u is flow in x direction
@@ -126,19 +130,22 @@ for i=1:length(frames)
         end
     end
     
+    if debug && ~check_durations(traj_array, open_index)
+        pause;
+    end
+    
     % here, all trajectories have been updated for frame f. Some were
     % closed, so we need to re-initialize in textured areas of the image
     % just like for the first frame.
     endpts_cell = cellfun(@(pts) pts(:,end), ...
         {traj_array(open_index:end).points}, 'UniformOutput', false);
-    endpts_aray = horzcat(endpts_cell{:});
+    endpts_array = horzcat(endpts_cell{:});
     new_trajectories = initializeTrajectories(Inext, mosegParams, ...
-        endpts_aray);
-    for t2 = 1:length(new_trajectories)
-        new_trajectories(t2).startframe = f+1;
-    end
+        f+1, endpts_array);
     traj_array = horzcat(traj_array, new_trajectories);
 end
+
+
 
 % all remaining trajectories' end frame is the final frame
 for t = open_index:length(traj_array)
@@ -150,5 +157,18 @@ end
 % remove trajectories whose duration is only one frame (these give no
 % information to further processing, and only get in the way)
 traj_array = traj_array([traj_array.duration] > 1);
+
+end
+
+function ok = check_durations(traj_array, open_index)
+
+ok = true;
+
+for t = 1:open_index - 1;
+    if size(traj_array(t).points, 2) ~= traj_array(t).duration
+        fprintf('trajectory %d is inconsistent\n', t);
+        ok = false;
+    end
+end
 
 end

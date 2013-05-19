@@ -14,22 +14,8 @@ function [clusters, trajectories, W] = moseg(mosegParams, debug)
 
 if nargin < 2, debug = false; end
 
-% compute trajectories across all specified frames
-[trajectories, fflows, ~] = computeTrajectories(mosegParams);
-
-% if debug is on, visualize trajectories
-if debug
-    fprintf('created %d trajectories..\n', length(trajectories));
-    
-    if ~exist('visualize_trajectories_trail', 'file')
-        addpath('debug');
-    end
-    mov = visualize_trajectories_trail(trajectories, mosegParams);
-    movie(mov, 5, 3);
-end
-
-% create affinity matrix
-W = createTrajectoryAffinityMatrix(trajectories, fflows, mosegParams);
+% load or create affinity matrix
+[trajectories, W] = getAffinity(mosegParams, debug);
 
 % segment trajectories using spectral clustering on the affinity matrix
 clusters = segment_by_affinity(W, trajectories, mosegParams);

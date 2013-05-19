@@ -7,7 +7,7 @@ function mov = visualize_trajectories_trail(traj_array, mosegParams)
 h = figure();
 movie_frame = 1;
 V = VideoReader(mosegParams.video_file);
-for f=mosegParams.startframe : mosegParams.endframe
+for f = int32(mosegParams.startframe) : int32(mosegParams.endframe)
     base_img = read(V, f);
     % draw dots on this frame
     selected_trajectories = traj_array(...

@@ -280,7 +280,7 @@ else
                 startframe, endframe);
             moseg_params.lambda = params.MOS.theta;
             moseg_params.num_clusters = 8;
-            [clusters, trajectories, ~] = moseg(moseg_params);
+            [clusters, trajectories, ~] = moseg(moseg_params, true);
             
             [Iint, areas] = trajectoriesToIntegralImage(size(img), clusters, trajectories, descGT.frame);
             areas(areas == 0) = inf;
