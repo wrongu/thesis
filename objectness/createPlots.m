@@ -19,7 +19,11 @@ ylabel('sum pascal score');
 legend('S = 16', 'S = 24', 'S = 32', 'S = 48', 'S = 64');
 
 % LEARN THETA {OTHER CUES}
-cues = {'CC', 'ED', 'SS'};%, 'OFM', 'OFD'};
+if params.primary_type == params.TYPE_IMAGE
+    cues = {'CC', 'ED', 'SS'};
+elseif params.primary_type == params.TYPE_VIDEO
+    cues = {'CC', 'ED', 'SS', 'OFM', 'OFD'};
+end
 
 for i=1:length(cues)
     cue = cues{i};
@@ -35,7 +39,11 @@ end
 %  LIKELIHOOD PLOTS
 % ==================
 
-cues = {'MS', 'CC', 'ED', 'SS', 'OFD', 'OFM'};
+if params.primary_type == params.TYPE_IMAGE
+    cues = {'MS', 'CC', 'ED', 'SS'};
+elseif params.primary_type == params.TYPE_VIDEO
+    cues = {'MS', 'CC', 'ED', 'SS', 'OFD', 'OFM'};
+end
 
 for i=1:length(cues)
     cue = cues{i};
@@ -53,5 +61,22 @@ for i=1:length(cues)
     end
 end
 
-
+if params.primary_type == params.TYPE_VIDEO
+    % ================
+    %  COMBINED PLOTS
+    % ================
+    cues = {'CC', 'ED', 'SS'};
+    for i=1:length(cues)
+        cue = cues{i};
+        ld_vid = load(fullfile(params.data, ['learn' cue '.mat']));
+        ld_img = load(fullfile(params.data, '..', 'Images', ['learn' cue '.mat']));
+        plots.combined.(cue) = figure();
+        plot(ld_vid.scores(1,:), ld_vid.scores(2,:), ...
+            ld_img.scores(1,:), ld_img.scores(2,:));
+        xlabel(['theta' cue]);
+        ylabel('sum likelihood');
+        legend('videos', 'images');
+        
+    end
+end
 end
