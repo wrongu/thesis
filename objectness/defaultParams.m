@@ -107,8 +107,8 @@ if type == TYPE_VIDEO
     % params for MOS (motion segmentation)
     params.MOS.name = 'Motion-Segmentation';
     params.MOS.theta = 8;
-    params.MOS.preframes = 15;
-    params.MOS.postframes = 0;
+    params.MOS.preframes = 5;
+    params.MOS.postframes = 5;
     params.MOS.sampling = 8;
     params.MOS.domain = [.005 0.01 0.02 0.05 0.1];
     params.MOS.pixelDistance = 8;
