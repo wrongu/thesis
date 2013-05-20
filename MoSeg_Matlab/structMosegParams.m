@@ -30,6 +30,7 @@ mosegParams.lambda = 0.02;
 mosegParams.cluster_threshold = 0.6;
 mosegParams.repeat_kmeans = 10;
 mosegParams.num_clusters = 8;
+mosegParams.max_trajectories = 1700;
 
 verifyMosegParams(mosegParams, 'structMosegParams.m');
 

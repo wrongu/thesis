@@ -159,4 +159,31 @@ end
 % information to further processing, and only get in the way)
 traj_array = traj_array([traj_array.duration] > 1);
 
+% mosegParams may specify a limit on the number of trajectories.
+if length(traj_array) > mosegParams.max_trajectories
+    traj_array_small = traj_array;
+    for min_length = 3:5
+        % start by removing trajectories with a short duration (3-5 frames)
+        traj_array_small = traj_array_small(...
+            [traj_array_small.duration] >= min_length);
+        if debug
+            fprintf('removing trajectories with duration %d... ', min_length);
+            fprintf('%d remaining\n', length(traj_array_small));
+        end
+        if(length(traj_array_small) <= mosegParams.max_trajectories)
+            break;
+        end
+    end
+    
+    if length(traj_array_small) > mosegParams.max_trajectories
+        % if we didn't remove enough, remove other trajectories at random until
+        % we're below the max
+        inds = randperm(length(traj_array_small));
+        traj_array_small = traj_array_small(inds(1:mosegParams.max_trajectories));
+    end
+    
+    traj_array = traj_array_small;
+    
+end
+
 end

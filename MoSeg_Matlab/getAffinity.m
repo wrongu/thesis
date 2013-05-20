@@ -2,11 +2,27 @@
 % builds up a lot of files on the system but saves a *lot* of time when
 % running multiple training runs on the same data.
 %
+% the hyperparameter lambda can be varied without having to recompute the
+% entire matrix:
+%
+% W(i,j)  = exp(-lambda  * dist);
+% W(i,j)' = exp(-lambda' * dist);
+% let alpha = lambda' / lambda
+% W(i,j)' = exp(-alpha * lambda * dist)
+%         = exp(-lambda * dist) ^ alpha
+%         = W(i,j)^alpha
+%
+% ..for this reason, all matrices are saved with lambda = 0.005, then scaled
+%   if other values of lambda are requested
+%
 % see ../LDOF_Matlab/getFlow
 
 function [traj_array, W] = getAffinity(mosegParams, debug)
 
 if nargin < 2, debug = false; end
+
+lambda = mosegParams.lambda;
+mosegParams.lambda = 0.005;
 
 fname = get_save_file(mosegParams);
 if exist(fname, 'file')
@@ -15,6 +31,7 @@ if exist(fname, 'file')
     traj_array = struct.traj_array;
 else
     % compute trajectories across all specified frames
+    
     [traj_array, ~, ~] = computeTrajectories(mosegParams, debug);
     
     % if debug is on, output about trajectories
@@ -33,6 +50,11 @@ else
     W = createTrajectoryAffinityMatrix(traj_array, mosegParams);
     if debug, toc; end;
     save(fname, 'W', 'traj_array');
+end
+
+if lambda ~= 0.005
+    alpha = lambda / 0.005;
+    W = W .^ alpha;
 end
 
 end
