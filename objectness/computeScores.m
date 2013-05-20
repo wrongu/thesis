@@ -250,14 +250,14 @@ else
             % compute flow
             fprintf('OFD: getting flow for %s\n', descGT.video_file);
             F = getNetFlow(fullfile(params.trainingVideos, descGT.video_file), ...
-                descGT.frame, params.OFD.num_frames, V, true);
+                descGT.frame, params.OFD.num_frames, 10, V, true);
             boxes = scoreOFD(F, windows, params.OFD.theta);
             
         case 'OFM'
             % checkMotionParams(params);
             assert(descGT.type == 2, 'cue OFM is undefined for images');
             F = getNetFlow(fullfile(params.trainingVideos, descGT.video_file), ...
-                descGT.frame, params.OFM.num_frames, V, true);
+                descGT.frame, params.OFM.num_frames, 10, V, true);
             boxes = scoreOFM(F, windows, params.OFM.theta);
             
         case 'MOS'
