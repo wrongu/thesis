@@ -38,11 +38,7 @@ norm_ring(norm_ring == 0) = eps;
 
 % similarity defined as difference over sum of mean flow. note that
 % similarity will be in [0, 1].
-similarity = abs(norm_in - norm_ring) ./ (norm_in + norm_ring);
-
-% higher score goes to windows with low similarity to surrounding outside
-% area.
-scores = 1 - similarity';
+scores = (abs(norm_in - norm_ring) ./ (norm_in + norm_ring))';
 
 boxes = [windows scores];
 
