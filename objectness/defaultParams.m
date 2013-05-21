@@ -54,7 +54,7 @@ params.MS.numberBins = length(params.MS.bincenters) - 1;
 % params for CC
 params.CC.name = 'Color-Contrast';
 params.CC.theta = 100;
-params.CC.domain = 100:1:200;
+params.CC.domain = 5:1:100;
 params.CC.quant = [4 8 8];
 params.CC.bincenters = 0:0.01:2;
 params.CC.numberBins = length(params.CC.bincenters) - 1;
@@ -83,10 +83,9 @@ params.SS.numberBins = length(params.SS.bincenters) - 1;
 
 if type == TYPE_VIDEO
     % params for OF (optic flow)
-    % TODO - choose domain, theta, bincenters, pixelDistance, etc more intelligently
     params.OFD.name = 'Optic-Flow-Direction';
     params.OFD.theta = 50;
-    params.OFD.domain = 1:1:100;
+    params.OFD.domain = 4:1:50;
     params.OFD.num_frames = 5;
     params.OFD.pixelDistance = 8;
     params.OFD.imageBorder = 0;
@@ -96,7 +95,7 @@ if type == TYPE_VIDEO
 
     params.OFM.name = 'Optic-Flow-Magnitude';
     params.OFM.theta = 50;
-    params.OFM.domain = 1:1:100;
+    params.OFM.domain = 4:1:50;
     params.OFM.num_frames = 5;
     params.OFM.pixelDistance = 8;
     params.OFM.imageBorder = 0;
