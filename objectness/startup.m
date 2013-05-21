@@ -18,4 +18,4 @@ if ~exist('moseg', 'file')
 end
 
 display('Loading the default parameters ...');
-params = defaultParams([pwd '/'], 2);
+params = defaultParams([pwd '/']);

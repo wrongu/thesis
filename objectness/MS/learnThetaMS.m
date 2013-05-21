@@ -2,7 +2,7 @@ function thresholdOpt = learnThetaMS(params,scale)
 
 fprintf('Learning theta_MS for scale = %d \n',scale);
 level = find(params.MS.scale == scale);
-scores = double(zeros(2, size(params.MS.domain, 2)));
+scores = zeros(2, size(params.MS.domain, 2));
 if params.primary_type == params.TYPE_IMAGE
     struct = load(fullfile(params.trainingImages, 'structGT.mat'));
 elseif params.primary_type == params.TYPE_VIDEO
@@ -29,7 +29,7 @@ for idxThr = 1:length(params.MS.domain(level,:)) %loop over the possible thresho
         
         saliencyMAP = saliencyMap(img,params.MS.filtersize,scale);%compute the saliency map - for the current scale            
         thrmap = saliencyMAP >= threshold;                    
-        salmap = saliencyMAP .* thrmap;
+        salmap = saliencyMAP .* thrmap;                         
         thrmapIntegralImage = computeIntegralImage(thrmap);                         
         salmapIntegralImage =  computeIntegralImage(salmap);                                             
         scoreScale = slidingWindowComputeScore(double(saliencyMAP), scale, 1, 1, threshold, salmapIntegralImage, thrmapIntegralImage);     
@@ -65,7 +65,7 @@ for idxThr = 1:length(params.MS.domain(level,:)) %loop over the possible thresho
         
     end
     
-    scores(:, idxThr) = [threshold double(scoreThreshold)]';
+    scores(:, idxThr) = [threshold scoreThreshold]';
     
 %     scores(2, idxThr) = scoreThreshold;
 %     scores(3, idxThr) = threshold;
