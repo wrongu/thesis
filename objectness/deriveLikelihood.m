@@ -11,36 +11,39 @@ params.(cue).theta = theta_value;
 % contain complementary examples and their union will be all of them. This
 % just preallocates enough space for *either* to have all examples.
 % [deprecated: this doesn't work well with parallelization]
-examplesPos = zeros(length(posneg) * params.distribution_windows,1);
-examplesNeg = zeros(length(posneg) * params.distribution_windows,1);
+% examplesPos = zeros(length(posneg) * params.distribution_windows,1);
+% examplesNeg = zeros(length(posneg) * params.distribution_windows,1);
 % [broken: this was meant to allow parallelization. cryptic errors ensued.]
-% examplesPosCell = cell(length(posneg), 1);
-% examplesNegCell = cell(length(posneg), 1);
+
+% loop over training images; compute scores in parallel
+parfor idx = 1:length(posneg)
+    
+    % get a score for all windows on this image according to the given cue
+    temp_boxes = computeScores(posneg(idx),cue,params,posneg(idx).examples);
+    posneg(idx).scores = temp_boxes(:,end);
+end
 
 % count number of positive (object) and negative (background) windows from
 % the random set of windows in each training image
 pos = 0; 
 neg = 0;
+examplesPos = zeros(length(posneg) * params.distribution_windows,1);
+examplesNeg = zeros(length(posneg) * params.distribution_windows,1);
 
-% loop over training images
+% concatenate results in a separate loop to make the parallel part happy
 for idx = 1:length(posneg)
     
-    % get a score for all windows on this image according to the given cue
-    temp_boxes = computeScores(posneg(idx),cue,params,posneg(idx).examples);
-    posneg(idx).scores = temp_boxes(:,end);
+	posInds = find(posneg(idx).labels == 1);
+	negInds = find(posneg(idx).labels == -1);
     
-    % get all windows and scores that are considered positive (object)
-    % examples
-    indexPositive = find(posneg(idx).labels == 1);
-    examplesPos(pos+1:pos+length(indexPositive)) = ...
-        posneg(idx).scores(indexPositive);
-    pos = pos + length(indexPositive);
+    examplesPos(pos+1 : pos+length(posInds)) = posneg(idx).scores(posInds);
+    examplesNeg(neg+1 : neg+length(negInds)) = posneg(idx).scores(negInds);
     
-    indexNegative = find(posneg(idx).labels == -1);
-    examplesNeg(neg+1:neg+length(indexNegative)) = ...
-        posneg(idx).scores(indexNegative);
-    neg = neg + length(indexNegative);
+    pos = pos + length(posInds);
+    neg = neg + length(negInds);
+    
 end
+
 examplesPos(pos+1:end) = [];
 examplesNeg(neg+1:end) = [];
 
