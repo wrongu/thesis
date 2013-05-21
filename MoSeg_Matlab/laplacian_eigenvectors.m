@@ -14,8 +14,9 @@ L = Dsq * L * Dsq;
 try
     [eigenvectors, lambda] = eigs(L, n, 'SM');
 catch
-    fprintf('eigs failed. trying with +eps');
-    [eigenvectors, lambda] = eigs(L+eps, n, 'SM');
+    fprintf('eigs failed. trying with +eps\n');
+    [eigenvectors, lambda] = eigs(L + eps*speye(size(W)), n, 'SM');
 end
 lambda = diag(lambda);
+lambda(1) = 0; % in case it was altered by the +eps hack, it should always be 0
 end

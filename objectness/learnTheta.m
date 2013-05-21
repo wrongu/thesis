@@ -1,7 +1,6 @@
-function [thetaOpt, likelihoodOpt, pobj] = learnTheta(cue,params)
-thetaOpt = 1;
-likelihoodOpt = [0 0]';
-pobj = 0;
+function [thetaOpt, likelihoodOpt, pobj] = learnTheta(cue,params,debug)
+
+if nargin < 3, debug = false; end
 
 fprintf('Learning theta for %s\n',cue);
 
@@ -36,7 +35,7 @@ for idx = 1:length(params.(cue).domain)
     fprintf('learning %s: %d of %d\n', cue, idx, length(params.(cue).domain));
     
     theta = params.(cue).domain(idx);
-    [likelihood, p, logTotal] = deriveLikelihood(posneg,theta,params,cue);
+    [likelihood, p, logTotal] = deriveLikelihood(posneg,theta,params,cue,debug);
     
     scores(:, idx) = [params.(cue).domain(idx) logTotal p]';
     all_likelihoods{idx} = likelihood;

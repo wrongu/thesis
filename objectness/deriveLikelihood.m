@@ -1,6 +1,9 @@
 
 
-function [likelihood, pobj, logTotal] = deriveLikelihood(posneg,theta_value,params,cue)
+function [likelihood, pobj, logTotal] = ...
+    deriveLikelihood(posneg, theta_value, params, cue, debug)
+
+if nargin < 5, debug = false; end
 
 params.(cue).theta = theta_value;
 
@@ -24,6 +27,11 @@ neg = 0;
 
 % loop over training images
 for idx = 1:length(posneg)
+    
+    if debug
+        fprintf('%s likelihood: theta = %f\texample %d of %d\n', ...
+            cue, theta_value, idx, length(posneg));
+    end
     
     % get a score for all windows on this image according to the given cue
     temp_boxes = computeScores(posneg(idx),cue,params,posneg(idx).examples);

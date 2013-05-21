@@ -110,7 +110,7 @@ if type == TYPE_VIDEO
     params.MOS.preframes = 5;
     params.MOS.postframes = 5;
     params.MOS.sampling = 8;
-    params.MOS.domain = [.005 0.01 0.02 0.05 0.1];
+    params.MOS.domain = logspace(log10(0.005), log10(0.1), 30);
     params.MOS.pixelDistance = 8;
     params.MOS.imageBorder = 0;
     params.MOS.bincenters = 0:0.01:1;

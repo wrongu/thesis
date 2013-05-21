@@ -71,7 +71,7 @@ for cid = 1:length(cues)
     cue = cues{cid};
     savefile = fullfile(params.yourData, sprintf('%slikelihood.mat', upper(cue)));
     if ~(skip_precomputed && exist(savefile, 'file'))
-        [thetaOpt, likelihood, pobj] = learnTheta(cue,params);
+        [thetaOpt, likelihood, pobj] = learnTheta(cue,params,true);
         params.(cue).theta = thetaOpt;
         save(savefile,'likelihood');
     else
