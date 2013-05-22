@@ -22,7 +22,7 @@ legend('S = 16', 'S = 24', 'S = 32', 'S = 48', 'S = 64');
 if params.primary_type == params.TYPE_IMAGE
     cues = {'CC', 'ED', 'SS'};
 elseif params.primary_type == params.TYPE_VIDEO
-    cues = {'CC', 'ED', 'SS', 'OFM', 'OFD'};
+    cues = {'CC', 'ED', 'SS', 'OFM', 'OFD', 'MOS'};
 end
 
 for i=1:length(cues)
@@ -42,7 +42,7 @@ end
 if params.primary_type == params.TYPE_IMAGE
     cues = {'MS', 'CC', 'ED', 'SS'};
 elseif params.primary_type == params.TYPE_VIDEO
-    cues = {'MS', 'CC', 'ED', 'SS', 'OFD', 'OFM'};
+    cues = {'MS', 'CC', 'ED', 'SS', 'OFD', 'OFM', 'MOS'};
 end
 
 for i=1:length(cues)
