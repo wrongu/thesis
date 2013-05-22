@@ -22,7 +22,17 @@ for t = 1:size(tests,1)
     end
 end
 
+if length(params.cues) > 1
+    fprintf('BEGINNING TEST WITH CUES ');
+    for i=1:length(params.cues)-1
+        fprintf('%s, ', params.cues{i});
+    end
+    fprintf('AND %s\n', params.cues{end});
+else
+    fprintf('BEGINNING TEST WITH CUE %s\n', params.cues{1});
+end
 for t = 1:numel(tests)
+    fprintf('Test: W = %d\tExample = %d\n', tests(t).W, mod((t-1), length(structGT))+1); 
     tests(t).boxes = runObjectness(tests(t).descGT, tests(t).W, params);
     
     count_valid = 0;
@@ -38,5 +48,28 @@ for t = 1:numel(tests)
     
     tests(t).percent = count_valid / size(tests(t).boxes, 1);
 end
+
+end
+
+% TODO - ONE SAVE FILE PER ROW (i.e. per windows)
+
+function filename = get_save_file(params, tests)
+
+cues = sort(params.cues);
+
+cue_str = '';
+for i=1:length(cues)
+    cue_str = [cue_str cues{i}];
+end
+
+W = unique([tests.W]);
+W_str = 'W';
+for i=1:length(W)
+    W_str = [W_str '_' num2str(W(i))];
+end
+
+examples = size(tests,2);
+
+filename = sprintf('testresult__%s__%s__Ex%d.mat', cue_str, W_str, examples);
 
 end
