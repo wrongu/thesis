@@ -19,8 +19,10 @@ params.(cue).theta = theta_value;
 % [broken: this was meant to allow parallelization. cryptic errors ensued.]
 
 % loop over training images; compute scores in parallel
-parfor idx = 1:length(posneg)
-    
+N = length(posneg);
+for i=1:N, posneg(i).scores = []; end
+parfor idx = 1:N
+    if debug, fprintf('example %d of %d\n', idx, N); end
     % get a score for all windows on this image according to the given cue
     temp_boxes = computeScores(posneg(idx),cue,params,posneg(idx).examples);
     posneg(idx).scores = temp_boxes(:,end);
