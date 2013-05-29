@@ -1,4 +1,4 @@
-function tests = testObjectness(testDirectory, params)
+function [tests, h] = testObjectness(testDirectory, params, makeplot)
 % testObjectness(testDirectory) test the objectness measure according to
 % params.cues
 %
@@ -66,18 +66,23 @@ for w = 1:size(tests,1)
     end
 end
 
+h = -1;
+if makeplot
+    h = figure();
+    success = arrayfun(@(r) mean([tests(r,:).percent]), 1:size(tests,1));
+    w = [tests(:,1).W];
+    plot(w, success);
+    
+    title(sprintf('Test for cues %s', horzcat(params.cues{:})));
+    xlabel('Num Windows');
+    ylabel('Percent of Ground Truth Boxes Covered');
 end
 
-% TODO - ONE SAVE FILE PER ROW (i.e. per windows)
+end
 
 function filename = get_save_file(params, W)
 
-cues = sort(params.cues);
-
-cue_str = '';
-for i=1:length(cues)
-    cue_str = [cue_str cues{i}];
-end
+cue_str = horzcat(params.cues{:});
 
 filename = sprintf('testresult_%s_W%d.mat', cue_str, W);
 

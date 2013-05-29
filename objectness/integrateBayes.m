@@ -21,7 +21,16 @@ for cue_id = 1:length(cues)
         case 'SS'            
             struct = load(fullfile(params.data, 'SSlikelihood.mat'));
             likelihood{cue_id} = struct.likelihood;
-            
+        
+        case 'OFD'
+            struct = load(fullfile(params.data, 'OFDlikelihood.mat'));
+            likelihood{cue_id} = struct.likelihood;
+        case 'OFM'
+            struct = load(fullfile(params.data, 'OFMlikelihood.mat'));
+            likelihood{cue_id} = struct.likelihood;
+        case 'MOS'
+            struct = load(fullfile(params.data, 'MOSlikelihood.mat'));
+            likelihood{cue_id} = struct.likelihood;
         otherwise
             display('error: cue name unknown')            
     end
@@ -44,6 +53,15 @@ for cue_id = 1:length(cues)
                     
         case 'SS'
             binNumber{cue_id} = max(min(ceil(score(:,cue_id)*100+0.5),params.SS.numberBins+1),1);
+            
+        case 'OFD'
+            binNumber{cue_id} = max(min(ceil(score(:,cue_id)*100+0.5),params.OFD.numberBins+1),1);
+            
+        case 'OFM'
+            binNumber{cue_id} = max(min(ceil(score(:,cue_id)*100+0.5),params.OFM.numberBins+1),1);
+            
+        case 'MOS'
+            binNumber{cue_id} = max(min(ceil(score(:,cue_id)*100+0.5),params.MOS.numberBins+1),1);
         otherwise
             display('error: cue name unknown');
     end
