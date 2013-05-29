@@ -68,14 +68,7 @@ end
 
 h = -1;
 if makeplot
-    h = figure();
-    success = arrayfun(@(r) mean([tests(r,:).percent]), 1:size(tests,1));
-    w = [tests(:,1).W];
-    plot(w, success);
-    
-    title(sprintf('Test for cues %s', horzcat(params.cues{:})));
-    xlabel('Num Windows');
-    ylabel('Percent of Ground Truth Boxes Covered');
+    h = plot_test_result(tests, params.cues);
 end
 
 end
