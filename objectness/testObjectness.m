@@ -14,6 +14,10 @@ else
     structGT = ld.structGT;
 end
 
+if ~exist(fullfile(testDirectory, 'saves'), 'file')
+    mkdir(fullfile(testDirectory, 'saves'));
+end
+
 tests(1:4, length(structGT)) = struct('W', 0, 'boxes', [], 'percent', 0);
 for t = 1:size(tests,1)
     for s = 1:length(structGT)
@@ -35,28 +39,30 @@ for w = 1:size(tests,1)
     W = tests(w,1).W;
     savefile = fullfile(testDirectory, 'saves', get_save_file(params, W));
     if exist(savefile, 'file')
+        fprintf('loading %s\n', savefile);
         ld = load(savefile);
         tests(w,:) = ld.slice;
     else
-        for ex = 1:size(tests,2)
-            fprintf('Test: W = %d\tExample = %d\n', tests(t).W, mod((t-1), length(structGT))+1);
-            tests(t).boxes = runObjectness(tests(t).descGT, tests(t).W, params);
+        slice = tests(w,:);
+        parfor ex = 1:size(tests,2)
+            fprintf('Test: W = %d\tExample = %d\n', W, ex);
+            slice(ex).boxes = runObjectness(slice(ex).descGT, slice(ex).W, params);
             
             count_valid = 0;
-            for box = 1:size(tests(t).boxes, 1)
-                for annot = 1:size(tests(t).descGT.boxes, 1)
-                    if computePascalScore(tests(t).boxes(box,:), ...
-                            tests(t).descGT.boxes(annot,:) >= params.pascalThreshold)
+            for box = 1:size(slice(ex).boxes, 1)
+                for annot = 1:size(slice(ex).descGT.boxes, 1)
+                    if computePascalScore(slice(ex).boxes(box,:), ...
+                            slice(ex).descGT.boxes(annot,:) >= params.pascalThreshold)
                         count_valid = count_valid + 1;
                         break;
                     end
                 end
             end
             
-            tests(t).percent = count_valid / size(tests(t).boxes, 1);
+            slice(ex).percent = count_valid / size(slice(ex).boxes, 1);
         end
-        slice = tests(w, :);
         save(savefile, 'slice');
+        tests(w,:) = slice;
     end
 end
 

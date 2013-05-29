@@ -89,7 +89,7 @@ if type == TYPE_VIDEO
     params.OFD.num_frames = 5;
     params.OFD.pixelDistance = 8;
     params.OFD.imageBorder = 0;
-    params.OFD.bincenters = logspace(-3,0,101);%0:0.01:1;
+    params.OFD.bincenters = logspace(-2, 0, 101);
     params.OFD.numberBins = length(params.OFD.bincenters) - 1;
     params.OFD.required_path = fullfile(dirRoot, '..', 'LDOF_Matlab');
 

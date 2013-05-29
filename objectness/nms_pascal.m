@@ -25,5 +25,6 @@ else
   [pick, ~]= NMS_sampling(area(I),overlap,x1(I),y1(I),x2(I),y2(I),maxWindows);
   pick = int32(pick) + 1;
   pick(pick == 0) = [];
+  pick(pick > size(boxes,1)) = [];
   top = boxes(I(pick),:);
 end

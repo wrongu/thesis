@@ -1,6 +1,6 @@
 function windows = generateWindows(sz,optionGenerate,params,cue)  
 
-assert(numel(sz) < 4);
+
 
 height = sz(1);
 width = sz(2);
@@ -74,10 +74,10 @@ switch optionGenerate
             end
         end
         
-        xmin = xmin * pixelDistance + offsetWidth;
-        xmax = xmax * pixelDistance + offsetWidth;
-        ymin = ymin * pixelDistance + offsetHeight;
-        ymax = ymax * pixelDistance + offsetHeight;
+        xmin = xmin * pixelDistance + double(offsetWidth);
+        xmax = xmax * pixelDistance + double(offsetWidth);
+        ymin = ymin * pixelDistance + double(offsetHeight);
+        ymax = ymax * pixelDistance + double(offsetHeight);
                  
         windows = [xmin ymin xmax ymax];        
         
