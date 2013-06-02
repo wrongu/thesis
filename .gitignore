@@ -2,3 +2,5 @@
 *.m~
 objectness/SS/segment/*
 objectness/tmpdir
+objectness/Tests/oldsaves/*
+objectness/Tests/saves2/*
