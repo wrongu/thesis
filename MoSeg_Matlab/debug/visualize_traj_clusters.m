@@ -15,7 +15,7 @@ for f=mosegParams.startframe : mosegParams.endframe
             colors(cluster,:));
     end
     imshow(base_img);
-    title(sprintf('%d clusters', 2));
+%     title(sprintf('%d clusters', 2));
     mov(movie_frame) = getframe(h);
     movie_frame = movie_frame+1;
 end

@@ -75,7 +75,12 @@ end
 
 function filename = get_save_file(params, W)
 
-cue_str = horzcat(params.cues{:});
+cue_str = '';
+for cue = sort(params.cues)
+    cue_str = [cue_str cue{:}];
+end
+
+disp(cue_str);
 
 filename = sprintf('testresult_%s_W%d.mat', cue_str, W);
 
